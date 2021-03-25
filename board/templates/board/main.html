@@ -1,0 +1,45 @@
+{% extends "layout/basic.html" %}
+{% load static %}
+
+
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
+{% endblock %}
+
+{% block filter %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid search_form">
+        <div class="row ">
+            <div class="col-sm-2">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown button
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                        <li><a class="dropdown-item active" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="container-fluid">
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+{% endblock %}
+
