@@ -1,0 +1,76 @@
+.search-form{
+    padding-top: 40px;
+}
+
+/* Panel decoration  */
+.side-checkbox {
+    display: none;
+}
+.side-panel {
+	position: fixed;
+	z-index: 100;
+	top: 57px;
+	left: -360px;
+	background: #dc3545;
+	transition: all 0.5s;
+	width: 320px;
+	height: 100vh;
+	box-shadow: 10px 0 20px rgba(0,0,0,0.4);
+	color: #FFF;
+	padding: 40px 20px;
+}
+.side-title {
+	font-size: 20px;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-bottom: 2px solid #bfe2ff;
+}
+/* Decorating a button on a page */
+.side-button-1-wr {
+	text-align: center; /* Container for the button */
+}
+.side-button-1 .side-b {
+	margin: 10px;
+	text-decoration: none;
+	position: relative;
+	font-size: 12px;
+	line-height: 20px;
+	padding: 12px 30px;
+	color: #FFF;
+	font-weight: bold;
+	text-transform: uppercase;
+	font-family: 'Roboto Condensed', Тahoma, sans-serif;
+	background: #dc3545;
+	cursor: pointer;
+	border: 2px solid #bfe2ff;
+	transition-duration: 0.2s;
+}
+.side-button-1 .side-b:hover,
+.side-button-1 .side-b:active,
+.side-button-1 .side-b:focus {
+	font-size: 15px;
+}
+.side-button-1 .side-b:before {
+	top: -6px;
+}
+
+.side-checkbox:checked + .side-panel {
+	left: 0;
+}
+/* Decorating a button on a panel */
+.side-button-2 {
+	font-size: 30px;
+	border-radius: 20px;
+	position: absolute;
+	z-index: 1;
+	top: 8px;
+	right: 8px;
+	cursor: pointer;
+	transform: rotate(45deg);
+	color: #BFE2FF;
+	transition: all 280ms ease-in-out;
+}
+.side-button-2:hover {
+	transform: rotate(135deg) scale(1.1);
+	color: #FFF;
+}
