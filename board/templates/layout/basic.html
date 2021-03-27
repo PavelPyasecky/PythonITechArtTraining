@@ -5,10 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}GameMuster{% endblock %}</title>
-    {% block  styles %}{% endblock %}
+    {% block  styles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
+    {% endblock %}
     {% block scripts %}{% endblock %}
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
+
 
 </head>
 <body>
