@@ -5,13 +5,11 @@
 {% block styles %}
 {% endblock %}
 
-{% block filter %}
-{% endblock %}
-
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-2">
+                {% block filter %}
                 <input type="checkbox" id="side-checkbox" class="side-checkbox"/>
                 <div class="side-panel">
                     <label class="side-button-2" for="side-checkbox">+</label>
@@ -47,6 +45,7 @@
                         <div class="side-b">Filter</div>
                     </label>
                 </div>
+                {% endblock %}
 
             </div>
             <div class="col-sm">
@@ -58,15 +57,15 @@
 
                     {% if games %}
                         <section class="grid">
-                            {% for game in games %}
+                            {% for game in page_obj %}
                                 <article class="grid-item">
                                     <div class="image">
-                                        <img src="{{ game_img_url }}"/>
+                                        <img src="{{ game.img_url }}"/>
                                     </div>
                                     <div class="info">
-                                        <h2>{{ game_name }}</h2>
+                                        <h2>{{ game.name }}</h2>
                                         <div class="info-text">
-                                            <p>{{ game_desc }}</p>
+                                            <p>{{ game.desc }}</p>
                                         </div>
                                         <div class="button-wrap">
                                             <a class="btn-more " href="#">More</a>
@@ -78,8 +77,9 @@
                         </section>
                     {% endif %}
 
-
+                {% include "layout/pagination.html" %}
                 </div>
+
             </div>
             <div class="col-sm-2"></div>
         </div>

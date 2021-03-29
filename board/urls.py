@@ -3,5 +3,5 @@ from .views import main, detail
 
 urlpatterns = [
     path('', main, name='main'),
-    path('detail/', detail, name='detail'),
+    path('<int:game_id>/detail/', detail, name='detail'),
 ]
