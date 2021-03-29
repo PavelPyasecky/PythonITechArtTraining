@@ -69,7 +69,7 @@
                                         <h2 class="info-title">{{ game.name }}</h2>
                                         <span class="info-text">{{ game.desc }}</span>
                                         <div class="button-wrap">
-                                            <a class="btn-more btn-font-style btn-effect" href="#">More</a>
+                                            <a class="btn-more btn-font-style btn-effect" href="{% url 'detail' game.id %}">More</a>
                                         </div>
                                     </div>
                                 </article>
