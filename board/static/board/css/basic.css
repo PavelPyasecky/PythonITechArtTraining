@@ -170,6 +170,9 @@
 .page-link {
 	background: #dc3545;
 	color: #FFF;
-
+}
+.active {
+	background: #ffffff;
+	color: #0c63e4;
 }
 
