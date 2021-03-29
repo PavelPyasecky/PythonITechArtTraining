@@ -14,7 +14,7 @@
                 <div class="side-panel">
                     <label class="side-button-2" for="side-checkbox">+</label>
                     <div class="side-title">Parameter selection</div>
-                    <div>Platforms:</div>
+                    <div class="side-item">Platforms:</div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                             <label class="form-check-label" for="inlineCheckbox1">PC</label>
@@ -26,7 +26,7 @@
                         </div>
 
 
-                        <div>Genres:</div>
+                        <div class="side-item">Genres:</div>
                         <div>
                             <select class="form-select " aria-label="Default select example">
                                 <option value="1">Platformer</option>
@@ -34,15 +34,18 @@
                                 <option value="3">Fighting</option>
                             </select>
                         </div>
-                        <div><label for="customRange3" class="form-label">User rating:</label>
-                            <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3"></div>
+                        <div class="side-item">
+                            <label for="customRange3" class="form-label">User rating:</label>
+                            <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3">
+                        </div>
                         <hr class="dropdown-divider">
-
-                        <button type="button" class="btn btn-light text-danger">Apply</button>
+                        <div class="side-button-1-wr">
+                            <button type="button" class="btn btn-light text-danger btn-effect">Apply</button>
+                        </div>
                 </div>
                 <div class="side-button-1-wr">
                     <label class="side-button-1" for="side-checkbox">
-                        <div class="side-b btn-font-style">Filter</div>
+                        <div class="side-b btn-font-style btn-effect">Filter</div>
                     </label>
                 </div>
                 {% endblock %}
@@ -66,7 +69,7 @@
                                         <h2 class="info-title">{{ game.name }}</h2>
                                         <span class="info-text">{{ game.desc }}</span>
                                         <div class="button-wrap">
-                                            <a class="btn-more btn-font-style" href="#">More</a>
+                                            <a class="btn-more btn-font-style btn-effect" href="#">More</a>
                                         </div>
                                     </div>
                                 </article>

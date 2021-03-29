@@ -80,19 +80,21 @@
 	border: 2px solid #BFE2FF;
 	transition-duration: 0.2s;
 }
-.btn-more:hover,
-.btn-more:active,
-.btn-more:focus {
-	font-size: 15px;
-	color: #FFF;
-}
-/* Button styles */
 .btn-font-style {
 	color: #FFF;
 	font-size: 12px;
 	font-weight: bold;
 	text-transform: uppercase;
 	font-family: 'Roboto Condensed', Тahoma, sans-serif;
+}
+.btn-effect {
+	transition-duration: 0.2s;
+}
+.btn-effect:hover,
+.btn-effect:active,
+.btn-effect:focus {
+	font-size: 15px;
+	color: #FFF;
 }
 /* Panel description */
 .side-checkbox {
@@ -117,6 +119,10 @@
 	margin-bottom: 20px;
 	border-bottom: 2px solid #bfe2ff;
 }
+.side-item {
+	margin: 30px 0 10px 0;
+
+}
 /* Describing a button on a page */
 .side-button-1-wr {
 	text-align: center;
@@ -132,13 +138,6 @@
 	border: 2px solid #bfe2ff;
 	transition-duration: 0.2s;
 }
-.side-button-1 .side-b:hover,
-.side-button-1 .side-b:active,
-.side-button-1 .side-b:focus {
-	font-size: 15px;
-}
-
-
 .side-checkbox:checked + .side-panel {
 	left: 0;
 }
