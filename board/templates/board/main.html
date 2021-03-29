@@ -42,7 +42,7 @@
                 </div>
                 <div class="side-button-1-wr">
                     <label class="side-button-1" for="side-checkbox">
-                        <div class="side-b">Filter</div>
+                        <div class="side-b btn-font-style">Filter</div>
                     </label>
                 </div>
                 {% endblock %}
@@ -63,12 +63,10 @@
                                         <img src="{{ game.img_url }}"/>
                                     </div>
                                     <div class="info">
-                                        <h2>{{ game.name }}</h2>
-                                        <div class="info-text">
-                                            <p>{{ game.desc }}</p>
-                                        </div>
+                                        <h2 class="info-title">{{ game.name }}</h2>
+                                        <span class="info-text">{{ game.desc }}</span>
                                         <div class="button-wrap">
-                                            <a class="btn-more " href="#">More</a>
+                                            <a class="btn-more btn-font-style" href="#">More</a>
                                         </div>
                                     </div>
                                 </article>

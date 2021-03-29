@@ -1,3 +1,4 @@
+/* Search-form description */
 .search-form {
 	margin: 40px 0 40px 0;
 }
@@ -9,10 +10,8 @@
 	box-shadow: 0 0 8px #979797;
 }
 /* Describing main area */
-.grid * {
-	box-sizing: border-box;
-}
 .grid {
+	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 	column-gap: 30px;
@@ -47,7 +46,7 @@
 .grid-item:hover .image img  {
 	transform: scale(1.1);
 }
-.info h2 {
+.info-title {
 	font-family: 'Roboto Condensed', Тahoma, sans-serif;
 	color: #337AB7;
 	font-size: 24px;
@@ -55,16 +54,14 @@
 	margin: 0;
 	text-align: center;
 }
-.info-text p {
+.info-text {
 	font-size: 15px;
 	line-height: 20px;
 	font-family: Verdana, sans-serif;
-	margin-bottom: 10px;
-}
-.info-text p:last-child {
 	margin-bottom: 0;
 }
-.grid-item .button-wrap {
+/* More button */
+.button-wrap {
 	display: block;
 	width: 100%;
 	position: absolute;
@@ -72,18 +69,12 @@
 	left: 0;
 	text-align: center;
 }
-/* More button */
 .btn-more {
 	display: inline-flex;
 	text-decoration: none;
 	position: relative;
-	font-size: 12px;
 	line-height: 20px;
 	padding: 12px 30px;
-	color: #FFF;
-	font-weight: bold;
-	text-transform: uppercase;
-	font-family: 'Roboto Condensed', Тahoma, sans-serif;
 	background: #337AB7;
 	cursor: pointer;
 	border: 2px solid #BFE2FF;
@@ -95,8 +86,15 @@
 	font-size: 15px;
 	color: #FFF;
 }
-
-/* Panel decoration  */
+/* Button styles */
+.btn-font-style {
+	color: #FFF;
+	font-size: 12px;
+	font-weight: bold;
+	text-transform: uppercase;
+	font-family: 'Roboto Condensed', Тahoma, sans-serif;
+}
+/* Panel description */
 .side-checkbox {
     display: none;
 }
@@ -119,21 +117,16 @@
 	margin-bottom: 20px;
 	border-bottom: 2px solid #bfe2ff;
 }
-/* Decorating a button on a page */
+/* Describing a button on a page */
 .side-button-1-wr {
-	text-align: center; /* Container for the button */
+	text-align: center;
 }
 .side-button-1 .side-b {
 	margin: 35px;
 	text-decoration: none;
 	position: relative;
-	font-size: 12px;
 	line-height: 20px;
 	padding: 12px 30px;
-	color: #FFF;
-	font-weight: bold;
-	text-transform: uppercase;
-	font-family: 'Roboto Condensed', Тahoma, sans-serif;
 	background: #dc3545;
 	cursor: pointer;
 	border: 2px solid #bfe2ff;
@@ -149,7 +142,7 @@
 .side-checkbox:checked + .side-panel {
 	left: 0;
 }
-/* Decorating a button on a panel */
+/* Describing a button on a panel */
 .side-button-2 {
 	font-size: 30px;
 	border-radius: 20px;
@@ -169,7 +162,7 @@
 .nav {
 	box-shadow: 0 5px 20px rgba(0,0,0,0.4);
 }
-/* Pagination decoration */
+/* Pagination description */
 .pagination {
 	list-style: none;
 	margin: 20px 0 20px 0;
