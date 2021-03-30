@@ -3,6 +3,42 @@
 
 
 {% block content %}
+<div class="container-fluid m-5">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="text-title-wr">
+                <p class="text-title">{{ game.name }}</p>
+                <p class="info-text">{{ game.desc }}</p>
+            </div>
+            <div class="side-button-1-wr btn-must-wr">
+                <label class="side-button-1 btn-must">
+                    <div class="side-b btn-must btn-font-style btn-effect">Must</div>
+                </label>
+            </div>
+            <div class="text-desc-wr">
+                <span class="text-desc">Description</span>
+                <p>{{ game.desc_full }}</p>
+            </div>
+            <div class="text-release-wr">
+                <span class="text-desc">Release Date</span>
+                <p class="info-text">{{ game.release }}</p>
+            </div>
+            <div class="text-screen-wr">
+                <p class="text-desc">Screenshots</p>
+            </div>
+            <div class="grid grid-col-3">
+                {% for screen in game.sreen_url %}
+                    <div class="screen-wr screen">
+                        <img class="screen-img" src="{{ screen }}">
+                    </div>
+                {% endfor %}
+            </div>
 
+
+        </div>
+        <div class="col-3"></div>
+        <div class="col-3"></div>
+    </div>
+</div>
 {% endblock %}
 

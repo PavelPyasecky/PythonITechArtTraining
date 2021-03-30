@@ -2,22 +2,19 @@
 {% load static %}
 
 
-
 {% block styles %}
-{% endblock %}
-
-{% block filter %}
 {% endblock %}
 
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-2">
+                {% block filter %}
                 <input type="checkbox" id="side-checkbox" class="side-checkbox"/>
                 <div class="side-panel">
                     <label class="side-button-2" for="side-checkbox">+</label>
                     <div class="side-title">Parameter selection</div>
-                    <div>Platforms:</div>
+                    <div class="side-item">Platforms:</div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                             <label class="form-check-label" for="inlineCheckbox1">PC</label>
@@ -29,7 +26,7 @@
                         </div>
 
 
-                        <div>Genres:</div>
+                        <div class="side-item">Genres:</div>
                         <div>
                             <select class="form-select " aria-label="Default select example">
                                 <option value="1">Platformer</option>
@@ -37,29 +34,53 @@
                                 <option value="3">Fighting</option>
                             </select>
                         </div>
-                        <div><label for="customRange3" class="form-label">User rating:</label>
-                            <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3"></div>
+                        <div class="side-item">
+                            <label for="customRange3" class="form-label">User rating:</label>
+                            <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3">
+                        </div>
                         <hr class="dropdown-divider">
-
-                        <button type="button" class="btn btn-light text-danger">Apply</button>
+                        <div class="side-button-1-wr">
+                            <button type="button" class="btn btn-light text-danger btn-effect">Apply</button>
+                        </div>
                 </div>
                 <div class="side-button-1-wr">
                     <label class="side-button-1" for="side-checkbox">
-                        <div class="side-b">Filter</div>
+                        <div class="side-b btn-font-style btn-effect">Filter</div>
                     </label>
                 </div>
+                {% endblock %}
 
             </div>
             <div class="col-sm">
-                <div class="container-fluid search-form">
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                <div class="container-fluid">
+                    <form class="d-flex search-form">
+                        <input class="form-control me-2 search-form__input" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success " type="submit">Search</button>
                     </form>
-                    <div class="row ">
 
-                    </div>
+                    {% if games %}
+                        <section class="grid">
+                            {% for game in page_obj %}
+                                <article class="grid-item">
+                                    <div class="image">
+                                        <img src="{{ game.img_url }}"/>
+                                    </div>
+                                    <div class="info">
+                                        <h2 class="info-title">{{ game.name }}</h2>
+                                        <span class="info-text">{{ game.desc }}</span>
+                                        <div class="button-wrap">
+                                            <a class="btn-more btn-font-style btn-effect" href="{% url 'detail' game.id %}">More</a>
+                                        </div>
+                                    </div>
+                                </article>
+                            {% endfor %}
+
+                        </section>
+                    {% endif %}
+
+                {% include "layout/pagination.html" %}
                 </div>
+
             </div>
             <div class="col-sm-2"></div>
         </div>

@@ -5,22 +5,22 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}GameMuster{% endblock %}</title>
-    {% block  styles %}{% endblock %}
-    {% block scripts %}{% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
+    {% block  styles %}{% endblock %}
+    {% block scripts %}{% endblock %}
+
 
 </head>
 <body>
-<nav class="navbar navbar-light bg-danger">
+<nav class="navbar navbar-light bg-danger nav">
   <div class="container-fluid">
-    <a class="navbar-brand text-white font-monospace" href="#">
+    <a class="navbar-brand text-white font-monospace" href="{% url 'main' %}">
       <img src="{% static 'board/img/logo.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
       GameMuster
     </a>
   </div>
 </nav>
-    {% block filter %}{% endblock %}
-    {% block content %}{% endblock %}
+    {% block content %}{% block filter %}{% endblock %}{% endblock %}
 </body>
 </html>
