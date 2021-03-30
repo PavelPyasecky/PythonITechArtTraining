@@ -22,6 +22,7 @@ class Game:
     geners = ["Arcade", "Action"]
     platforms = ['PC', 'PS4']
     rating = {'users': 7.32, 'critics': 7.11}
+    id = 1
 
 
 def main(request):
