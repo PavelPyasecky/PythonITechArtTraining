@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import datetime
 
 
 class Game:
@@ -18,10 +19,14 @@ class Game:
                  '../../static/board/img/screen3.png',
                  '../../static/board/img/screen1.png', '../../static/board/img/screen2.jpg',
                  '../../static/board/img/screen3.png']
-    geners = ["Arcade", "Action"]
+    genres = ["Arcade", "Action"]
     platforms = ['PC', 'PS4']
-    rating = {'users': 7.32, 'critics': 7.11}
+    rating = {'users': [7.32, 123], 'critics': [7.11, 123]}
     id = 1
+    tweets = [['tweet_name', "Pac-Man is a maze arcade game developed and released by Namco in 1980."
+                "The original Japanese title of Puck Man was changed to Pac-Man for international releases as "
+                "a preventative",
+               datetime.datetime.now()]] * 5
 
 
 def main(request):

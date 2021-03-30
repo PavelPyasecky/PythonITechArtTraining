@@ -215,6 +215,19 @@
 	font-weight: bold;
 	margin: 0;
 }
+.text-light {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0;
+}
+.text-link {
+	color: white;
+	font-weight: bold;
+	margin: 0;
+}
+.text-link:hover {
+	color: black;
+}
 .btn-must-wr {
 	padding-left: 0;
 	margin-left: 0;
@@ -241,7 +254,7 @@
 	width: auto;
 	object-fit: cover;
 }
-/**/
+/*Grid for Rating block*/
 .grid-sm {
 	margin: 0;
 	display: grid;
@@ -267,18 +280,18 @@
 	border: 2px solid #bfe2ff;
 	box-shadow: 0 5px 5px rgba(0,0,0,0.4);
 }
-/*Geners and Platforms*/
+/*Genres and Platforms*/
 .category {
 	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 5px;
 }
 .category__text {
-	position: sticky;
-	bottom: 10px;
-	left: 10px;
+	text-align: left;
 }
 .category__score {
-	position: absolute;
-	right: 10px;
+	text-align: right;
 }
 /*Describing rating panels*/
 .card {
@@ -288,14 +301,17 @@
 	position: relative;
 	line-height: 20px;
 	padding: 8px 15px;
-	cursor: pointer;
 	border: 2px solid #bfe2ff;
+	box-shadow: 0 5px 5px rgba(0,0,0,0.4);
 }
 .card-color-users {
 	background: #49b644;
 }
 .card-color-critics {
 	background: #cd8a37;
+}
+.card-color-tweets {
+	background: #dc3545;
 }
 .card-text {
 	color: #FFF;
