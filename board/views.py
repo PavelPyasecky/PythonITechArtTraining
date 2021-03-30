@@ -19,6 +19,9 @@ class Game:
                  '../../static/board/img/screen1.png', '../../static/board/img/screen2.jpg',
                  '../../static/board/img/screen3.png']
     id = 1
+    geners = ["Arcade", "Action"]
+    platforms = ['PC', 'PS4']
+    rating = {'users': 7.32, 'critics': 7.11}
 
 
 def main(request):
