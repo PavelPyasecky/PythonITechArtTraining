@@ -4,8 +4,8 @@ import datetime
 
 
 class Game:
-    name = "PACMAN"
-    desc = "arcade video game"
+    name = 'PACMAN'
+    desc = 'arcade video game'
     img_url = 'static/board/img/pacman.jpg'
     desc_full = '''Pac-Man is a maze arcade game developed and released by Namco in 1980.
      The original Japanese title of Puck Man was changed to Pac-Man for international releases as a preventative 
@@ -14,18 +14,18 @@ class Game:
      all the dots inside an enclosed maze while avoiding four colored ghosts. Eating large flashing dots called 
      "Power Pellets" causes the ghosts to turn blue, allowing Pac-Man to eat them for bonus points. 
      '''
-    release = "Nov 1992"
+    release = 'Nov 1992'
     sreen_url = ['../../static/board/img/screen1.png', '../../static/board/img/screen2.jpg',
                  '../../static/board/img/screen3.png',
                  '../../static/board/img/screen1.png', '../../static/board/img/screen2.jpg',
                  '../../static/board/img/screen3.png']
-    genres = ["Arcade", "Action"]
+    genres = ['Arcade', 'Action']
     platforms = ['PC', 'PS4']
     rating = {'users': [7.32, 123], 'critics': [7.11, 123]}
     id = 1
-    tweets = [['tweet_name', "Pac-Man is a maze arcade game developed and released by Namco in 1980."
-                "The original Japanese title of Puck Man was changed to Pac-Man for international releases as "
-                "a preventative",
+    tweets = [['tweet_name', 'Pac-Man is a maze arcade game developed and released by Namco in 1980.'
+                'The original Japanese title of Puck Man was changed to Pac-Man for international releases as '
+                'a preventative',
                datetime.datetime.now()]] * 5
 
 
