@@ -1,9 +1,31 @@
+import datetime
+import requests
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-import datetime
+
+
+igdb_url = 'https://api.igdb.com/v4/'
+igdb_headers = {'Client-ID': 'so25gzj451xajgpll19wm0badrh9sk',
+                'Authorization': 'Bearer gd0r59g1nm5rem9j0bcj4ssmtrg4l8'}
 
 
 class Game:
+    def __init__(self, game_id):
+        res = requests.post(igdb_url + 'games/', headers=igdb_headers, data='fields *;').json()[0]
+        res_artwork = requests.post(igdb_url + 'artworks/', headers=igdb_headers, data='fields *;').json()[0]
+        res_screenshots = requests.post(igdb_url + 'screenshots/', headers=igdb_headers,
+                                        data='fields *; where game = {};'.format(game_id)).json()
+        self.id = game_id
+        self.name = res['name']
+        self.desc_full = res['summary']
+        if res_artwork:
+            self.img_url = res_artwork['url']
+        else:
+            self.img_url = res_screenshots[0]['url']
+        self.release = datetime.datetime.fromtimestamp(res['release_dates'][0])
+        print(res_screenshots)
+        self.screen_url = [item['url'] for item in res_screenshots]
+
     name = 'PACMAN'
     desc = 'arcade video game'
     img_url = 'static/board/img/pacman.jpg'
@@ -30,7 +52,7 @@ class Game:
 
 
 def main(request):
-    games = [Game()] * 31
+    games = [Game(70)] * 31
 
     paginator = Paginator(games, 8)    # object_list
     page_number = request.GET.get('page')
@@ -52,9 +74,9 @@ def main(request):
 
 
 def detail(request, game_id):
-    game = Game()
+    games = [Game(70)] * 31
     context = {
-        'game': game,
+        'game': games,
     }
     return render(request, 'board/detail.html', context=context)
 
