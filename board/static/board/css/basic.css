@@ -20,6 +20,7 @@
 }
 .grid-col-3 {
 	grid-template-columns: 1fr 1fr 1fr;
+
 }
 .grid-item {
 	box-shadow: 0 2px 5px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.2);
@@ -87,7 +88,6 @@
 	color: #FFF;
 	font-size: 12px;
 	font-weight: bold;
-	text-transform: uppercase;
 	font-family: 'Roboto Condensed', Тahoma, sans-serif;
 }
 .btn-effect {
@@ -202,6 +202,32 @@
 	margin: 25px 0 -30px 0;
 	display: block;
 }
+.text-rating-wr {
+	margin: 25px 0 10px 0;
+	display: block;
+}
+.text-wr {
+	margin: 20px 0 0 0;
+	display: inline;
+}
+.text-middle {
+	font-size: 25px;
+	font-weight: bold;
+	margin: 0;
+}
+.text-light {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0;
+}
+.text-link {
+	color: white;
+	font-weight: bold;
+	margin: 0;
+}
+.text-link:hover {
+	color: black;
+}
 .btn-must-wr {
 	padding-left: 0;
 	margin-left: 0;
@@ -228,4 +254,68 @@
 	width: auto;
 	object-fit: cover;
 }
-
+/*Grid for Rating block*/
+.grid-sm {
+	margin: 0;
+	display: grid;
+	column-gap: 5px;
+	row-gap: 5px;
+	padding: 5px 0;
+}
+.grid-sm-3 {
+	grid-template-columns: 1fr 1fr 1fr;
+}
+.grid-sm-4 {
+	grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.btn-sm {
+	margin: 5px;
+	text-decoration: none;
+	text-align: center;
+	position: relative;
+	line-height: 20px;
+	padding: 8px 15px;
+	background: #dc3545;
+	cursor: pointer;
+	border: 2px solid #bfe2ff;
+	box-shadow: 0 5px 5px rgba(0,0,0,0.4);
+}
+/*Genres and Platforms*/
+.category {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 5px;
+}
+.category__text {
+	text-align: left;
+}
+.category__score {
+	text-align: right;
+}
+/*Describing rating panels*/
+.card {
+	margin: 5px;
+	text-decoration: none;
+	text-align: left;
+	position: relative;
+	line-height: 20px;
+	padding: 8px 15px;
+	border: 2px solid #bfe2ff;
+	box-shadow: 0 5px 5px rgba(0,0,0,0.4);
+}
+.card-color-users {
+	background: #49b644;
+}
+.card-color-critics {
+	background: #cd8a37;
+}
+.card-color-tweets {
+	background: #dc3545;
+}
+.card-text {
+	color: #FFF;
+	font-size: 15px;
+	font-weight: bold;
+	font-family: 'Roboto Condensed', Тahoma, sans-serif;
+}

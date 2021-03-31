@@ -3,16 +3,16 @@
 
 
 {% block content %}
-<div class="container-fluid m-5">
-    <div class="row">
-        <div class="col-sm-6">
+<div class="container-fluid">
+    <div class="row mx-3">
+        <div class="col-sm-6 mt-4">
             <div class="text-title-wr">
                 <p class="text-title">{{ game.name }}</p>
                 <p class="info-text">{{ game.desc }}</p>
             </div>
             <div class="side-button-1-wr btn-must-wr">
                 <label class="side-button-1 btn-must">
-                    <div class="side-b btn-must btn-font-style btn-effect">Must</div>
+                    <div class="side-b btn-must btn-font-style btn-effect">MUST</div>
                 </label>
             </div>
             <div class="text-desc-wr">
@@ -27,17 +27,68 @@
                 <p class="text-desc">Screenshots</p>
             </div>
             <div class="grid grid-col-3">
-                {% for screen in game.sreen_url %}
+                {% for screen in game.screen_url %}
                     <div class="screen-wr screen">
                         <img class="screen-img" src="{{ screen }}">
                     </div>
                 {% endfor %}
             </div>
-
-
         </div>
-        <div class="col-3"></div>
-        <div class="col-3"></div>
+        <div class="col-sm-3 mt-lg-5">
+            <div class="text-rating-wr">
+                <p class="text-middle">Rating</p>
+
+                <div class="card card-text card-color-users">
+                    <label class="category">
+                        <span class="category__text">Users</span>
+                        <span class="category__score">{{ game.rating.users.0 }}({{ game.rating.users.1 }} reviews)</span>
+                    </label>
+                </div>
+
+                <div class="card card-text card-color-critics">
+                    <label class="category">
+                        <span class="category__text">Critics</span>
+                        <span class="category__score">{{ game.rating.critics.0 }}({{ game.rating.critics.1 }} reviews)</span>
+                    </label>
+                </div>
+
+            </div>
+            <div class="text-wr">
+                <p class="text-middle">Genres</p>
+                <div class="grid-sm grid-sm-3">
+                    {% for genre in game.genres %}
+                        <label class="side-button-1">
+                            <div class="btn-sm btn-font-style">{{ genre }}</div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="text-wr">
+                <p class="text-middle">Platforms</p>
+                <div class="grid-sm grid-sm-4">
+                    {% for platform in game.platforms %}
+                        <label class="side-button-1">
+                            <div class="btn-sm btn-font-style">{{ platform }}</div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 mt-lg-5">
+            <div class="text-wr">
+                <p class="text-middle">#Pacman Tweets</p>
+                {% for tweet in game.tweets %}
+                    <div class="card card-text card-color-tweets">
+                        <span class="text-light">{{ tweet.1 }}</span>
+                        <label class="category">
+                            <span class="text-light">{{ tweet.2|date:"SHORT_DATETIME_FORMAT" }}</span>
+                            <a class="text-link" href="#">@{{ tweet.0 }}</a>
+                        </label>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
