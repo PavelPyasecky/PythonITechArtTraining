@@ -50,6 +50,9 @@
 .grid-item:hover .image img  {
 	transform: scale(1.1);
 }
+.info {
+	text-align: center;
+}
 .info-title {
 	font-family: 'Roboto Condensed', Тahoma, sans-serif;
 	color: #337AB7;
