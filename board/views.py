@@ -32,9 +32,9 @@ class Game:
         self.name = res['name']
         self.desc = ' '.join([genre['name'] for genre in res['genres']])
         self.desc_full = res['summary']
-        try:
+        if 'cover' in res:
             self.img_url = get_img_url(res['cover']['image_id'])
-        except KeyError:
+        else:
             self.img_url = get_img_url(res['screenshots'][0]['image_id'])
         self.release = datetime.datetime.fromtimestamp(res['release_dates'][0])
         self.screen_url = [get_img_url(item['image_id']) for item in res['screenshots']]
