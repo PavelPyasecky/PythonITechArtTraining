@@ -15,7 +15,6 @@ def get_img_url(image_id, size='screenshot_big'):
 
 class Game:
     def __init__(self, game_id):
-        print('Got that game_id -> ', game_id)
         params = {
             'fields': 'id, cover.image_id, name, '
                       'summary, screenshots.image_id, '
@@ -55,6 +54,20 @@ class Game:
                datetime.datetime.now()]] * 5
 
 
+class Filter:
+    def __init__(self):
+        params = {
+            'fields': 'name'
+        }
+
+        res_genres = requests.post(igdb_url + 'genres/', headers=igdb_headers, params=params).json()
+        res_platforms = requests.post(igdb_url + 'platforms/', headers=igdb_headers, params=params).json()
+
+        self.genres = [item['name'] for item in res_genres]
+        self.platforms = [item['name'] for item in res_platforms]
+
+
+
 def main(request):
     params = {
         'filter[screenshots][not_eq]': 'null',
@@ -63,7 +76,6 @@ def main(request):
     res = requests.post(igdb_url + 'games/', headers=igdb_headers, params=params).json()
     games = []
     for game in res:
-        print(game['id'])
         games.append(Game(game['id']))
 
     paginator = Paginator(games, 8)    # object_list
@@ -77,8 +89,10 @@ def main(request):
         # Set last page, if the counter is bigger then max_page
         page_obj = paginator.page(paginator.num_pages)
 
+    filter_panel = Filter()
     context = {
         'games': games,
+        'filter_panel': filter_panel,
         'page_obj': page_obj,
         'page_numbers': paginator.page_range
     }
