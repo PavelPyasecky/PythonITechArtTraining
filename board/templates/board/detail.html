@@ -41,14 +41,14 @@
                 <div class="card card-text card-color-users">
                     <label class="category">
                         <span class="category__text">Users</span>
-                        <span class="category__score">{{ game.rating.users.0 }}({{ game.rating.users.1 }} reviews)</span>
+                        <span class="category__score">{{ game.rating.0|floatformat:2 }} ({{ game.rating.1 }} reviews)</span>
                     </label>
                 </div>
 
                 <div class="card card-text card-color-critics">
                     <label class="category">
                         <span class="category__text">Critics</span>
-                        <span class="category__score">{{ game.rating.critics.0 }}({{ game.rating.critics.1 }} reviews)</span>
+                        <span class="category__score">{{ game.aggregated_rating.0|floatformat:2 }} ({{ game.aggregated_rating.1 }} reviews)</span>
                     </label>
                 </div>
 

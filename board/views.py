@@ -9,42 +9,46 @@ igdb_headers = {'Client-ID': 'so25gzj451xajgpll19wm0badrh9sk',
                 'Authorization': 'Bearer gd0r59g1nm5rem9j0bcj4ssmtrg4l8'}
 
 
+def get_img_url(image_id, size='screenshot_big'):
+    return 'https://images.igdb.com/igdb/image/upload/t_{}/{}.jpg'.format(size, image_id)
+
+
 class Game:
     def __init__(self, game_id):
-        res = requests.post(igdb_url + 'games/', headers=igdb_headers, data='fields *;').json()[0]
-        res_artwork = requests.post(igdb_url + 'artworks/', headers=igdb_headers, data='fields *;').json()[0]
-        res_screenshots = requests.post(igdb_url + 'screenshots/', headers=igdb_headers,
-                                        data='fields *; where game = {};'.format(game_id)).json()
+        print('Got that game_id -> ', game_id)
+        params = {
+            'fields': 'id, cover.image_id, name, '
+                      'summary, screenshots.image_id, '
+                      'genres.name, release_dates, '
+                      'platforms.name, '
+                      'aggregated_rating, aggregated_rating_count, '
+                      'rating, rating_count ',
+            'filter[id][eq]': game_id
+        }
+
+        res = requests.post(igdb_url + 'games/', headers=igdb_headers, params=params).json()[0]
+
         self.id = game_id
         self.name = res['name']
+        self.desc = ' '.join([genre['name'] for genre in res['genres']])
         self.desc_full = res['summary']
-        if res_artwork:
-            self.img_url = res_artwork['url']
-        else:
-            self.img_url = res_screenshots[0]['url']
+        try:
+            self.img_url = get_img_url(res['cover']['image_id'])
+        except KeyError:
+            self.img_url = get_img_url(res['screenshots'][0]['image_id'])
         self.release = datetime.datetime.fromtimestamp(res['release_dates'][0])
-        print(res_screenshots)
-        self.screen_url = [item['url'] for item in res_screenshots]
+        self.screen_url = [get_img_url(item['image_id']) for item in res['screenshots']]
+        self.genres = [genre['name'] for genre in res['genres']]
+        self.platforms = [platform['name'] for platform in res['platforms']]
+        if 'rating' in res:
+            self.rating = [res['rating'], res['rating_count']]
+        else:
+            self.rating = ['', 0]
+        if 'aggregated_rating' in res:
+            self.aggregated_rating = [res['aggregated_rating'], res['aggregated_rating_count']]
+        else:
+            self.aggregated_rating = ['', 0]
 
-    name = 'PACMAN'
-    desc = 'arcade video game'
-    img_url = 'static/board/img/pacman.jpg'
-    desc_full = '''Pac-Man is a maze arcade game developed and released by Namco in 1980.
-     The original Japanese title of Puck Man was changed to Pac-Man for international releases as a preventative 
-     measure against defacement of the arcade machines by changing the P to an F. Outside Japan, the game was published
-     by Midway Games as part of its licensing agreement with Namco America. The player controls Pac-Man, who must eat 
-     all the dots inside an enclosed maze while avoiding four colored ghosts. Eating large flashing dots called 
-     "Power Pellets" causes the ghosts to turn blue, allowing Pac-Man to eat them for bonus points. 
-     '''
-    release = 'Nov 1992'
-    screen_url = ['../../static/board/img/screen1.png', '../../static/board/img/screen2.jpg',
-                 '../../static/board/img/screen3.png',
-                 '../../static/board/img/screen1.png', '../../static/board/img/screen2.jpg',
-                 '../../static/board/img/screen3.png']
-    genres = ['Arcade', 'Action']
-    platforms = ['PC', 'PS4']
-    rating = {'users': [7.32, 123], 'critics': [7.11, 123]}
-    id = 1
     tweets = [['tweet_name', 'Pac-Man is a maze arcade game developed and released by Namco in 1980.'
                 'The original Japanese title of Puck Man was changed to Pac-Man for international releases as '
                 'a preventative',
@@ -52,7 +56,15 @@ class Game:
 
 
 def main(request):
-    games = [Game(70)] * 31
+    params = {
+        'filter[screenshots][not_eq]': 'null',
+        'filter[genres][not_eq]': 'null'
+    }
+    res = requests.post(igdb_url + 'games/', headers=igdb_headers, params=params).json()
+    games = []
+    for game in res:
+        print(game['id'])
+        games.append(Game(game['id']))
 
     paginator = Paginator(games, 8)    # object_list
     page_number = request.GET.get('page')
@@ -74,9 +86,9 @@ def main(request):
 
 
 def detail(request, game_id):
-    games = [Game(70)] * 31
+    game = Game(game_id)
     context = {
-        'game': games,
+        'game': game,
     }
     return render(request, 'board/detail.html', context=context)
 
