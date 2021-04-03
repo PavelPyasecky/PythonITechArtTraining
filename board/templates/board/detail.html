@@ -9,7 +9,7 @@
             <div class="text-wr">
                 <div class="text-title-wr">
                     <p class="text-title">{{ game.name }}</p>
-                    <p class="info-text">{{ game.desc }}</p>
+                    <p class="info-text">{{ game.genres|join:' ' }}</p>
                 </div>
                 <div class="side-button-1-wr btn-must-wr">
                     <label class="side-button-1 btn-must">
@@ -19,7 +19,7 @@
             </div>
             <div class="text-desc-wr">
                 <span class="text-desc">Description</span>
-                <p>{{ game.desc_full }}</p>
+                <p>{{ game.full_description }}</p>
             </div>
             <div class="text-release-wr">
                 <span class="text-desc">Release Date</span>

@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="info">
                                         <h2 class="info-title">{{ game.name }}</h2>
-                                        <span class="info-text">{{ game.desc }}</span>
+                                        <span class="info-text">{{ game.genres|join:' ' }}</span>
                                         <div class="button-wrap">
                                             <a class="btn-more btn-font-style btn-effect" href="{% url 'detail' game.id %}">MORE</a>
                                         </div>

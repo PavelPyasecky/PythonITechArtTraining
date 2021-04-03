@@ -1,12 +1,13 @@
+import os
 import datetime
 import requests
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-igdb_url = 'https://api.igdb.com/v4/'
-igdb_headers = {'Client-ID': 'so25gzj451xajgpll19wm0badrh9sk',
-                'Authorization': 'Bearer gd0r59g1nm5rem9j0bcj4ssmtrg4l8'}
+IGDB_URL = 'https://api.igdb.com/v4/'
+IGDB_HEADERS = {'Client-ID': os.getenv('API_CLIENT_ID'),
+                'Authorization': os.getenv('API_SECRET_KEY')}
 
 
 def get_img_url(image_id, size='screenshot_big'):
@@ -25,12 +26,11 @@ class Game:
             'filter[id][eq]': game_id
         }
 
-        res = requests.post(igdb_url + 'games/', headers=igdb_headers, params=params).json()[0]
+        res = requests.post(IGDB_URL + 'games/', headers=IGDB_HEADERS, params=params).json()[0]
 
         self.id = game_id
         self.name = res['name']
-        self.desc = ' '.join([genre['name'] for genre in res['genres']])
-        self.desc_full = res['summary']
+        self.full_description = res['summary']
         if 'cover' in res:
             self.img_url = get_img_url(res['cover']['image_id'])
         else:
@@ -48,9 +48,10 @@ class Game:
         else:
             self.aggregated_rating = ['', 0]
 
-    tweets = [['tweet_name', 'Pac-Man is a maze arcade game developed and released by Namco in 1980.'
-                'The original Japanese title of Puck Man was changed to Pac-Man for international releases as '
-                'a preventative',
+    tweets = [['tweet_name',
+               'Pac-Man is a maze arcade game developed and released by Namco in 1980.'
+               'The original Japanese title of Puck Man was changed to Pac-Man for international releases as '
+               'a preventative',
                datetime.datetime.now()]] * 5
 
 
@@ -60,12 +61,11 @@ class Filter:
             'fields': 'name'
         }
 
-        res_genres = requests.post(igdb_url + 'genres/', headers=igdb_headers, params=params).json()
-        res_platforms = requests.post(igdb_url + 'platforms/', headers=igdb_headers, params=params).json()
+        res_genres = requests.post(IGDB_URL + 'genres/', headers=IGDB_HEADERS, params=params).json()
+        res_platforms = requests.post(IGDB_URL + 'platforms/', headers=IGDB_HEADERS, params=params).json()
 
         self.genres = [item['name'] for item in res_genres]
         self.platforms = [item['name'] for item in res_platforms]
-
 
 
 def main(request):
@@ -73,7 +73,8 @@ def main(request):
         'filter[screenshots][not_eq]': 'null',
         'filter[genres][not_eq]': 'null'
     }
-    res = requests.post(igdb_url + 'games/', headers=igdb_headers, params=params).json()
+    # Default: game entity has only 'id' field
+    res = requests.post(IGDB_URL + 'games/', headers=IGDB_HEADERS, params=params).json()
     games = []
     for game in res:
         games.append(Game(game['id']))
@@ -105,4 +106,3 @@ def detail(request, game_id):
         'game': game,
     }
     return render(request, 'board/detail.html', context=context)
-
