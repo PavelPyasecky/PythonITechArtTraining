@@ -35,10 +35,13 @@ class Game:
             self.img_url = get_img_url(res['cover']['image_id'])
         else:
             self.img_url = get_img_url(res['screenshots'][0]['image_id'])
-        self.release = datetime.datetime.fromtimestamp(res['release_dates'][0])
+        if 'release_dates' in res:
+            self.release = datetime.datetime.fromtimestamp(res['release_dates'][0])
+        else:
+            self.release = '--.--.--'
         self.screen_url = [get_img_url(item['image_id']) for item in res['screenshots']]
         self.genres = [genre['name'] for genre in res['genres']]
-        self.platforms = [platform['name'] for platform in res['platforms']]
+        self.platforms = [platform['name'] for platform in res['platforms']] if res.get('platforms') else []
         if 'rating' in res:
             self.rating = [res['rating'], res['rating_count']]
         else:
@@ -64,17 +67,32 @@ class Filter:
         res_genres = requests.post(IGDB_URL + 'genres/', headers=IGDB_HEADERS, params=params).json()
         res_platforms = requests.post(IGDB_URL + 'platforms/', headers=IGDB_HEADERS, params=params).json()
 
-        self.genres = [item['name'] for item in res_genres]
-        self.platforms = [item['name'] for item in res_platforms]
+        self.genres = res_genres
+        self.genres.insert(0, {'id': 0, 'name': 'Any'})
+        self.platforms = res_platforms
 
 
 def main(request):
+    params_post = {}
+    initials = {}
+
+    data = request.GET
+
+    if 'platforms' in data:
+        params_post['filter[platforms][eq]'] = '(' + ','.join(data.getlist('platforms')) + ')'
+        initials['platforms'] = [int(item) for item in data.getlist('platforms')]
+    if 'genres' in data:
+        if data['genres'] != '0':
+            initials['genres'] = params_post['filter[genres][eq]'] = int(data['genres'])
+    if 'rating' in data:
+        initials['rating'] = params_post['filter[rating][gte]'] = int(data['rating'])
+
     params = {
         'filter[screenshots][not_eq]': 'null',
-        'filter[genres][not_eq]': 'null'
+        'filter[genres][not_eq]': 'null',
     }
     # Default: game entity has only 'id' field
-    res = requests.post(IGDB_URL + 'games/', headers=IGDB_HEADERS, params=params).json()
+    res = requests.post(IGDB_URL + 'games/', headers=IGDB_HEADERS, params={**params, **params_post}).json()
     games = []
     for game in res:
         games.append(Game(game['id']))
@@ -94,6 +112,7 @@ def main(request):
     context = {
         'games': games,
         'filter_panel': filter_panel,
+        'initials': initials,
         'page_obj': page_obj,
         'page_numbers': paginator.page_range
     }

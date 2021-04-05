@@ -11,36 +11,59 @@
             <div class="col-sm-2">
                 {% block filter %}
                 <input type="checkbox" id="side-checkbox" class="side-checkbox"/>
-                <div class="side-panel">
-                    <label class="side-button-2" for="side-checkbox">+</label>
-                    <div class="side-title">Parameter selection</div>
-                    <div class="side-item">Platforms:</div>
-                        <div class="form-check form-check-inline">
+                    <div class="side-panel">
+                        <label class="side-button-2" for="side-checkbox">+</label>
+                        <form action="{% url 'main' %}" method="get">
+
+                            <div class="side-title">Parameter selection</div>
+                            <div class="side-item">Platforms:</div>
                             {% for platform in filter_panel.platforms %}
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value={{ platform }}>
-                            <label class="form-check-label" for="inlineCheckbox1">{{ platform }}</label>
+                                <div class="form-check form-check-inline">
+
+                                    {% if platform.id in initials.platforms %}
+                                        <input class="form-check-input" type="checkbox" id="{{ platform.id }}"
+                                               name="platforms" value="{{ platform.id }}" checked>
+                                        <label class="form-check-label"
+                                               for="{{ platform.id }}">{{ platform.name }}</label>
+                                    {% else %}
+                                        <input class="form-check-input" type="checkbox" id="{{ platform.id }}"
+                                               name="platforms" value="{{ platform.id }}">
+                                        <label class="form-check-label"
+                                               for="{{ platform.id }}">{{ platform.name }}</label>
+
+                                    {% endif %}
+
+                                </div>
                             {% endfor %}
-                        </div>
 
-
-
-                        <div class="side-item">Genres:</div>
-                        <div>
-                            <select class="form-select " aria-label="Default select example">
-                                {% for genre in filter_panel.genres %}
-                                <option value={{ genre|lower }}>{{ genre }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="side-item">
+                            <div class="side-item">Genres:</div>
+                            <div>
+                                <select class="form-select " aria-label="Default select example" name="genres">
+                                    {% for genre in filter_panel.genres %}
+                                        {% if genre.id == initials.genres %}
+                                            <option selected value={{ genre.id }}>{{ genre.name }}</option>
+                                        {% else %}
+                                            <option value={{ genre.id }}>{{ genre.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="side-item">
                             <label for="customRange3" class="form-label">User rating:</label>
-                            <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3">
-                        </div>
-                        <hr class="dropdown-divider">
-                        <div class="side-button-1-wr">
-                            <button type="button" class="btn btn-light text-danger btn-effect">Apply</button>
-                        </div>
-                </div>
+                                {% if initials.rating %}
+                                    <input type="range" class="form-range" min="0" max="100" value="{{ initials.rating }}" step="10" id="customRange3"
+                                           name="rating">
+                                {% else %}
+                                    <input type="range" class="form-range" min="0" max="100" step="10" id="customRange3"
+                                           name="rating">
+                                {% endif %}
+                            </div>
+                            <hr class="dropdown-divider">
+                            <div class="side-button-1-wr">
+                                <button type="submit" class="btn btn-light text-danger btn-effect">Apply</button>
+                            </div>
+                        </form>
+                    </div>
                 <div class="side-button-1-wr">
                     <label class="side-button-1" for="side-checkbox">
                         <div class="side-b btn-font-style btn-effect">FILTER</div>
