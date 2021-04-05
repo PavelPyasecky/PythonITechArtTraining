@@ -6,18 +6,20 @@
 <div class="container-fluid">
     <div class="row mx-3">
         <div class="col-sm-6 mt-4">
-            <div class="text-title-wr">
-                <p class="text-title">{{ game.name }}</p>
-                <p class="info-text">{{ game.desc }}</p>
-            </div>
-            <div class="side-button-1-wr btn-must-wr">
-                <label class="side-button-1 btn-must">
-                    <div class="side-b btn-must btn-font-style btn-effect">MUST</div>
-                </label>
+            <div class="text-wr">
+                <div class="text-title-wr">
+                    <p class="text-title">{{ game.name }}</p>
+                    <p class="info-text">{{ game.genres|join:' ' }}</p>
+                </div>
+                <div class="side-button-1-wr btn-must-wr">
+                    <label class="side-button-1 btn-must">
+                        <div class="side-b btn-must btn-font-style btn-effect">MUST</div>
+                    </label>
+                </div>
             </div>
             <div class="text-desc-wr">
                 <span class="text-desc">Description</span>
-                <p>{{ game.desc_full }}</p>
+                <p>{{ game.full_description }}</p>
             </div>
             <div class="text-release-wr">
                 <span class="text-desc">Release Date</span>
@@ -41,14 +43,14 @@
                 <div class="card card-text card-color-users">
                     <label class="category">
                         <span class="category__text">Users</span>
-                        <span class="category__score">{{ game.rating.users.0 }}({{ game.rating.users.1 }} reviews)</span>
+                        <span class="category__score">{{ game.rating.0|floatformat:2 }} ({{ game.rating.1 }} reviews)</span>
                     </label>
                 </div>
 
                 <div class="card card-text card-color-critics">
                     <label class="category">
                         <span class="category__text">Critics</span>
-                        <span class="category__score">{{ game.rating.critics.0 }}({{ game.rating.critics.1 }} reviews)</span>
+                        <span class="category__score">{{ game.aggregated_rating.0|floatformat:2 }} ({{ game.aggregated_rating.1 }} reviews)</span>
                     </label>
                 </div>
 
