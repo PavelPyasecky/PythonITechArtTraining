@@ -6,8 +6,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 API_IGDB_URL = 'https://api.igdb.com/v4/'
-IGDB_HEADERS = {'Client-ID': os.getenv('API_CLIENT_ID'),
-                'Authorization': os.getenv('API_SECRET_KEY')}
 
 
 class IGDB:
@@ -18,32 +16,42 @@ class IGDB:
     def api_request(self, endpoint, query):
         url = IGDB._build_url(endpoint)
         params = self._compose_request(query)
-
         response = post(url, **params)
         response.raise_for_status()
 
         return response.json()
 
+    def get_games(self, query):
+        return self.api_request('games', query)
+
+    def get_genres(self, query):
+        return self.api_request('genres', query)
+
+    def get_platforms(self, query):
+        return self.api_request('platforms', query)
+
     @staticmethod
     def _build_url(endpoint=''):
-        return f'{ API_IGDB_URL }{ endpoint }'
+        return f'{API_IGDB_URL}{endpoint}/'
 
     def _compose_request(self, query):
         if not query:
             raise Exception('No query provided!')
-
         request_params = {
             'headers': {
-                'Client-ID': self.client_id,
-                'Authorization': f'Bearer { self.auth_token }',
+                'Client-ID': f'{self.client_id}',
+                'Authorization': f'Bearer {self.auth_token}',
             }
         }
 
-        if isinstance(query, str):
-            request_params['data'] = query
+        if isinstance(query, dict):
+            request_params['params'] = query
             return request_params
 
         raise TypeError('Incorrect type of argument "query"')
+
+
+wrapper = IGDB(os.getenv('API_CLIENT_ID'), os.getenv('API_SECRET_KEY'))
 
 
 def get_img_url(image_id, size='screenshot_big'):
@@ -62,7 +70,7 @@ class Game:
             'filter[id][eq]': game_id
         }
 
-        res = requests.post(IGDB_URL + 'games/', headers=IGDB_HEADERS, params=params).json()[0]
+        res = wrapper.get_games(params)[0]
 
         self.id = game_id
         self.name = res['name']
@@ -99,9 +107,8 @@ class Filter:
         params = {
             'fields': 'name'
         }
-
-        res_genres = requests.post(IGDB_URL + 'genres/', headers=IGDB_HEADERS, params=params).json()
-        res_platforms = requests.post(IGDB_URL + 'platforms/', headers=IGDB_HEADERS, params=params).json()
+        res_genres = wrapper.get_genres(params)
+        res_platforms = wrapper.get_platforms(params)
 
         self.genres = res_genres
         self.genres.insert(0, {'id': 0, 'name': 'Any'})
@@ -127,8 +134,10 @@ def main(request):
         'filter[screenshots][not_eq]': 'null',
         'filter[genres][not_eq]': 'null',
     }
-    # Default: game entity has only 'id' field
-    res = requests.post(IGDB_URL + 'games/', headers=IGDB_HEADERS, params={**params, **params_post}).json()
+
+    params.update(params_post)
+    res = wrapper.get_games(params)
+
     games = []
     for game in res:
         games.append(Game(game['id']))
