@@ -1,11 +1,49 @@
 import os
 import datetime
-from requests import post
+from requests import post, get
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 API_IGDB_URL = 'https://api.igdb.com/v4/'
+API_TWITTER_URL = 'https://api.twitter.com/2/'
+
+
+class Twitter:
+    def __init__(self, bearer_token):
+        self.bearer_token = bearer_token
+
+    def api_request(self, endpoint, query):
+        url = f'{API_TWITTER_URL}{endpoint}'
+        params = self._compose_request(query)
+        response = get(url, **params)
+        response.raise_for_status()
+
+        return response.json()
+
+    def get_tweets(self, query):
+        return self.api_request('tweets/search/recent', query)
+
+    def get_username(self, user_id):
+        query = {
+            'ids': user_id,
+        }
+        return self.api_request('users', query)
+
+    def _compose_request(self, query):
+        if not query:
+            raise Exception('No query provided!')
+        request_params = {
+            'headers': {
+                'Authorization': f'Bearer {self.bearer_token}',
+            }
+        }
+
+        if isinstance(query, dict):
+            request_params['params'] = query
+            return request_params
+
+        raise TypeError('Incorrect type of argument "query"')
 
 
 class IGDB:
@@ -51,7 +89,8 @@ class IGDB:
         raise TypeError('Incorrect type of argument "query"')
 
 
-wrapper = IGDB(os.getenv('API_CLIENT_ID'), os.getenv('API_SECRET_KEY'))
+twitter_wrapper = Twitter(os.getenv('BEARER_TOKEN'))
+igdb_wrapper = IGDB(os.getenv('API_CLIENT_ID'), os.getenv('API_SECRET_KEY'))
 
 
 def get_img_url(image_id, size='screenshot_big'):
@@ -66,11 +105,11 @@ class Game:
                       'genres.name, release_dates, '
                       'platforms.name, '
                       'aggregated_rating, aggregated_rating_count, '
-                      'rating, rating_count ',
+                      'rating, rating_count, slug ',
             'filter[id][eq]': game_id
         }
 
-        res = wrapper.get_games(params)[0]
+        res = igdb_wrapper.get_games(params)[0]
 
         self.id = game_id
         self.name = res['name']
@@ -95,11 +134,24 @@ class Game:
         else:
             self.aggregated_rating = ['', 0]
 
-    tweets = [['tweet_name',
-               'Pac-Man is a maze arcade game developed and released by Namco in 1980.'
-               'The original Japanese title of Puck Man was changed to Pac-Man for international releases as '
-               'a preventative',
-               datetime.datetime.now()]] * 5
+        self.slug = res['slug']
+
+        params = {
+            'tweet.fields': 'created_at,author_id',
+            # 'expansions': 'entities.mentions.username',
+            'query': self.slug
+        }
+
+        tw_res = twitter_wrapper.get_tweets(params)
+        if 'data' in tw_res:
+            self.tweets = []
+            for tweet in tw_res['data'][:6]:
+
+                user = twitter_wrapper.get_username(tweet['author_id'])['data'][0]
+                tweet_date = tweet['created_at'].split('T')[0]
+                self.tweets.append([user['username'], tweet['text'], tweet_date])
+        else:
+            self.tweets = []
 
 
 class Filter:
@@ -107,8 +159,8 @@ class Filter:
         params = {
             'fields': 'name'
         }
-        res_genres = wrapper.get_genres(params)
-        res_platforms = wrapper.get_platforms(params)
+        res_genres = igdb_wrapper.get_genres(params)
+        res_platforms = igdb_wrapper.get_platforms(params)
 
         self.genres = res_genres
         self.genres.insert(0, {'id': 0, 'name': 'Any'})
@@ -136,7 +188,7 @@ def main(request):
     }
 
     params.update(params_post)
-    res = wrapper.get_games(params)
+    res = igdb_wrapper.get_games(params)
 
     games = []
     for game in res:
