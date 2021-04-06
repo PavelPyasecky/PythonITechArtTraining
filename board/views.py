@@ -1,13 +1,49 @@
 import os
 import datetime
-import requests
+from requests import post
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
-IGDB_URL = 'https://api.igdb.com/v4/'
+API_IGDB_URL = 'https://api.igdb.com/v4/'
 IGDB_HEADERS = {'Client-ID': os.getenv('API_CLIENT_ID'),
                 'Authorization': os.getenv('API_SECRET_KEY')}
+
+
+class IGDB:
+    def __init__(self, client_id, auth_token):
+        self.client_id = client_id
+        self.auth_token = auth_token
+
+    def api_request(self, endpoint, query):
+        url = IGDB._build_url(endpoint)
+        params = self._compose_request(query)
+
+        response = post(url, **params)
+        response.raise_for_status()
+
+        return response.json()
+
+    @staticmethod
+    def _build_url(endpoint=''):
+        return f'{ API_IGDB_URL }{ endpoint }'
+
+    def _compose_request(self, query):
+        if not query:
+            raise Exception('No query provided!')
+
+        request_params = {
+            'headers': {
+                'Client-ID': self.client_id,
+                'Authorization': f'Bearer { self.auth_token }',
+            }
+        }
+
+        if isinstance(query, str):
+            request_params['data'] = query
+            return request_params
+
+        raise TypeError('Incorrect type of argument "query"')
 
 
 def get_img_url(image_id, size='screenshot_big'):
