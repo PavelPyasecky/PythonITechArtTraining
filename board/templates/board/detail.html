@@ -81,10 +81,14 @@
                 <p class="text-middle">#{{ game.name|truncatewords:2 }} Tweets</p>
                 {% for tweet in game.tweets %}
                     <div class="card card-text card-color-tweets">
-                        <span class="text-light">{{ tweet.1 }}</span>
+                        <span class="text-light">{{ tweet.text }}</span>
                         <label class="category">
-                            <span class="text-light">{{ tweet.2 }}</span>
-                            <a class="text-link" href="#">@{{ tweet.0 }}</a>
+                            <span class="text-light">{{ tweet.created_at }}</span>
+                            {% if tweet.3 %}
+                                <a class="text-link" href="{{ tweet.author_url }}">@{{ tweet.author_name }}</a>
+                            {% else %}
+                                <p class="text-link">@{{ tweet.author_name }}</p>
+                            {% endif %}
                         </label>
                     </div>
                 {% endfor %}

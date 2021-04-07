@@ -18,17 +18,32 @@ class Twitter:
         params = self._compose_request(query)
         response = get(url, **params)
         response.raise_for_status()
+        response = response.json()
+        if 'data' in response:
+            return response['data']
+        else:
+            return ()
 
-        return response.json()
+    def get_tweet_by_id(self, tweet_id):
+        query = {
+            'tweet.fields': 'id,created_at,author_id'
+        }
+        return self.api_request(f'tweets/{tweet_id}', query)
 
-    def get_tweets(self, query):
-        return self.api_request('tweets/search/recent', query)
+    def get_tweets_by_string(self, key_word):
+        query = {
+            'tweet.fields': 'id',
+            'query': f'{key_word} lang:en',
+        }
+        tweet_list = self.api_request('tweets/search/recent', query)
+        return [item['id'] for item in tweet_list]
 
-    def get_username(self, user_id):
+    def get_user_by_id(self, user_id):
         query = {
             'ids': user_id,
+            'user.fields': 'id,username,url'
         }
-        return self.api_request('users', query)
+        return self.api_request('users', query)[0]
 
     def _compose_request(self, query):
         if not query:
@@ -136,22 +151,22 @@ class Game:
 
         self.slug = res['slug']
 
-        params = {
-            'tweet.fields': 'created_at,author_id',
-            # 'expansions': 'entities.mentions.username',
-            'query': self.slug
-        }
+        self.tweets = []
+        tweets_id = twitter_wrapper.get_tweets_by_string(self.slug)
+        for id in tweets_id[:8]:
+            self.tweets.append(Tweet(id))
 
-        tw_res = twitter_wrapper.get_tweets(params)
-        if 'data' in tw_res:
-            self.tweets = []
-            for tweet in tw_res['data'][:6]:
 
-                user = twitter_wrapper.get_username(tweet['author_id'])['data'][0]
-                tweet_date = tweet['created_at'].split('T')[0]
-                self.tweets.append([user['username'], tweet['text'], tweet_date])
-        else:
-            self.tweets = []
+class Tweet:
+    def __init__(self, tweet_id):
+        tweet = twitter_wrapper.get_tweet_by_id(tweet_id)
+        self.id = tweet['id']
+        self.text = tweet['text']
+        self.created_at = tweet['created_at']
+        self.author_id = tweet['author_id']
+        user = twitter_wrapper.get_user_by_id(self.author_id)
+        self.author_name = user['username']
+        self.author_url = user['url']
 
 
 class Filter:
