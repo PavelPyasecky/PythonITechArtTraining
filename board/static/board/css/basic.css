@@ -237,8 +237,8 @@
 /* Screenshots panel*/
 .screen-wr {
 	margin: 0;
-	width: 300px;
-	height: 300px;
+	width: 270px;
+	height: 270px;
 	border: 5px solid #515151;
 	display: inline;
 }
