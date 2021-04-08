@@ -23,7 +23,13 @@
             </div>
             <div class="text-release-wr">
                 <span class="text-desc">Release Date</span>
-                <p class="info-text">{{ game.release }}</p>
+                <p class="info-text">
+                    {% if game.release %}
+                        {{ game.release }}
+                    {% else %}
+                        __.__.__
+                    {% endif %}
+                </p>
             </div>
             <div class="text-screen-wr">
                 <p class="text-desc">Screenshots</p>
@@ -67,18 +73,23 @@
             </div>
             <div class="text-wr">
                 <p class="text-middle">Platforms</p>
-                <div class="grid-sm grid-sm-4">
-                    {% for platform in game.platforms %}
-                        <label class="side-button-1">
-                            <div class="btn-sm btn-font-style">{{ platform }}</div>
-                        </label>
-                    {% endfor %}
-                </div>
+                {% if game.platforms %}
+                    <div class="grid-sm grid-sm-4">
+                        {% for platform in game.platforms %}
+                            <label class="side-button-1">
+                                <div class="btn-sm btn-font-style">{{ platform }}</div>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="info-text text-center">No information</p>
+                {% endif %}
             </div>
         </div>
         <div class="col-sm-3 mt-lg-5">
             <div class="text-wr">
                 <p class="text-middle">#{{ game.name|truncatewords:2 }} Tweets</p>
+            {% if game.tweets %}
                 {% for tweet in game.tweets %}
                     <div class="card card-text card-color-tweets">
                         <span class="text-light">{{ tweet.text }}</span>
@@ -92,6 +103,9 @@
                         </label>
                     </div>
                 {% endfor %}
+            {% else %}
+                <p class="info-text">No information</p>
+            {% endif %}
 
             </div>
         </div>

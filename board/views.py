@@ -1,145 +1,32 @@
-import os
 import datetime
-from requests import post, get
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from gamestore.settings import BEARER_TOKEN, API_CLIENT_ID, API_SECRET_KEY
+from .apiwrappers import TwitterWrapper, IgdbWrapper
 
 
-API_IGDB_URL = 'https://api.igdb.com/v4/'
-API_TWITTER_URL = 'https://api.twitter.com/2/'
-
-
-class Twitter:
-    def __init__(self, bearer_token):
-        self.bearer_token = bearer_token
-
-    def api_request(self, endpoint, query):
-        url = f'{API_TWITTER_URL}{endpoint}'
-        params = self._compose_request(query)
-        response = get(url, **params)
-        response.raise_for_status()
-        response = response.json()
-        if 'data' in response:
-            return response['data']
-        else:
-            return ()
-
-    def get_tweet_by_id(self, tweet_id):
-        query = {
-            'tweet.fields': 'id,created_at,author_id'
-        }
-        return self.api_request(f'tweets/{tweet_id}', query)
-
-    def get_tweets_by_string(self, key_word):
-        query = {
-            'tweet.fields': 'id',
-            'query': f'{key_word} lang:en',
-        }
-        tweet_list = self.api_request('tweets/search/recent', query)
-        return [item['id'] for item in tweet_list]
-
-    def get_user_by_id(self, user_id):
-        query = {
-            'ids': user_id,
-            'user.fields': 'id,username,url'
-        }
-        return self.api_request('users', query)[0]
-
-    def _compose_request(self, query):
-        if not query:
-            raise Exception('No query provided!')
-        request_params = {
-            'headers': {
-                'Authorization': f'Bearer {self.bearer_token}',
-            }
-        }
-
-        if isinstance(query, dict):
-            request_params['params'] = query
-            return request_params
-
-        raise TypeError('Incorrect type of argument "query"')
-
-
-class IGDB:
-    def __init__(self, client_id, auth_token):
-        self.client_id = client_id
-        self.auth_token = auth_token
-
-    def api_request(self, endpoint, query):
-        url = IGDB._build_url(endpoint)
-        params = self._compose_request(query)
-        response = post(url, **params)
-        response.raise_for_status()
-
-        return response.json()
-
-    def get_games(self, query):
-        return self.api_request('games', query)
-
-    def get_genres(self, query):
-        return self.api_request('genres', query)
-
-    def get_platforms(self, query):
-        return self.api_request('platforms', query)
-
-    @staticmethod
-    def _build_url(endpoint=''):
-        return f'{API_IGDB_URL}{endpoint}/'
-
-    def _compose_request(self, query):
-        if not query:
-            raise Exception('No query provided!')
-        request_params = {
-            'headers': {
-                'Client-ID': f'{self.client_id}',
-                'Authorization': f'Bearer {self.auth_token}',
-            }
-        }
-
-        if isinstance(query, dict):
-            request_params['params'] = query
-            return request_params
-
-        raise TypeError('Incorrect type of argument "query"')
-
-
-twitter_wrapper = Twitter(os.getenv('BEARER_TOKEN'))
-igdb_wrapper = IGDB(os.getenv('API_CLIENT_ID'), os.getenv('API_SECRET_KEY'))
-
-
-def get_img_url(image_id, size='screenshot_big'):
-    return 'https://images.igdb.com/igdb/image/upload/t_{}/{}.jpg'.format(size, image_id)
+twitter_wrapper = TwitterWrapper(BEARER_TOKEN)
+igdb_wrapper = IgdbWrapper(API_CLIENT_ID, API_SECRET_KEY)
 
 
 class Game:
     def __init__(self, game_id):
-        params = {
-            'fields': 'id, cover.image_id, name, '
-                      'summary, screenshots.image_id, '
-                      'genres.name, release_dates, '
-                      'platforms.name, '
-                      'aggregated_rating, aggregated_rating_count, '
-                      'rating, rating_count, slug ',
-            'filter[id][eq]': game_id
-        }
-
-        res = igdb_wrapper.get_games(params)[0]
+        res = igdb_wrapper.get_games_by_id(game_id)[0]
 
         self.id = game_id
         self.name = res['name']
         self.full_description = res['summary']
         if 'cover' in res:
-            self.img_url = get_img_url(res['cover']['image_id'])
+            self.img_url = igdb_wrapper.get_img_url(res['cover']['image_id'])
         else:
-            self.img_url = get_img_url(res['screenshots'][0]['image_id'])
+            self.img_url = igdb_wrapper.get_img_url(res['screenshots'][0]['image_id'])
         if 'release_dates' in res:
             self.release = datetime.datetime.fromtimestamp(res['release_dates'][0])
         else:
-            self.release = '--.--.--'
-        self.screen_url = [get_img_url(item['image_id']) for item in res['screenshots']]
+            self.release = None
+        self.screen_url = [igdb_wrapper.get_img_url(item['image_id']) for item in res['screenshots']]
         self.genres = [genre['name'] for genre in res['genres']]
-        self.platforms = [platform['name'] for platform in res['platforms']] if res.get('platforms') else []
+        self.platforms = [platform['name'] for platform in res['platforms']] if res.get('platforms') else None
         if 'rating' in res:
             self.rating = [res['rating'], res['rating_count']]
         else:
@@ -153,8 +40,12 @@ class Game:
 
         self.tweets = []
         tweets_id = twitter_wrapper.get_tweets_by_string(self.slug)
-        for id in tweets_id[:8]:
-            self.tweets.append(Tweet(id))
+
+        if tweets_id:
+            for tweet_id in tweets_id[:8]:
+                self.tweets.append(Tweet(tweet_id))
+        else:
+            self.tweets = None
 
 
 class Tweet:
@@ -183,27 +74,21 @@ class Filter:
 
 
 def main(request):
-    params_post = {}
+    params = {}
     initials = {}
 
     data = request.GET
 
     if 'platforms' in data:
-        params_post['filter[platforms][eq]'] = '(' + ','.join(data.getlist('platforms')) + ')'
+        params['filter[platforms][eq]'] = '(' + ','.join(data.getlist('platforms')) + ')'
         initials['platforms'] = [int(item) for item in data.getlist('platforms')]
     if 'genres' in data:
         if data['genres'] != '0':
-            initials['genres'] = params_post['filter[genres][eq]'] = int(data['genres'])
+            initials['genres'] = params['filter[genres][eq]'] = int(data['genres'])
     if 'rating' in data:
-        initials['rating'] = params_post['filter[rating][gte]'] = int(data['rating'])
+        initials['rating'] = params['filter[rating][gte]'] = int(data['rating'])
 
-    params = {
-        'filter[screenshots][not_eq]': 'null',
-        'filter[genres][not_eq]': 'null',
-    }
-
-    params.update(params_post)
-    res = igdb_wrapper.get_games(params)
+    res = igdb_wrapper.get_games_id(params)
 
     games = []
     for game in res:
