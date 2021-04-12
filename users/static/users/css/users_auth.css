@@ -1,0 +1,21 @@
+.btn-signup, .btn-login {
+  display: inline-block;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.btn-login {
+  background-color: #fff;
+}
+
+.btn-signup {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.title-wrapper {
+  margin: 25px 10px 0 0;
+}
+
+/*# sourceMappingURL=users_auth.css.map */

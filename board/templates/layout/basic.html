@@ -7,6 +7,7 @@
     <title>{% block title %}GameMuster{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/users_auth.css' %}">
     {% block  styles %}{% endblock %}
     {% block scripts %}{% endblock %}
 
@@ -14,13 +15,23 @@
 </head>
 <body>
 <nav class="navbar navbar-light bg-danger nav">
-  <div class="container-fluid">
-    <a class="navbar-brand text-white font-monospace" href="{% url 'main' %}">
-      <img src="{% static 'board/img/logo.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-      GameMuster
-    </a>
-  </div>
+    <div class="container-fluid">
+
+        <div class="col-lg-2 align-content-center">
+            <a class="navbar-brand text-white font-monospace" href="{% url 'main' %}">
+                <img src="{% static 'board/img/logo.png' %}" alt="" width="30" height="24"
+                     class="d-inline-block align-text-top">
+                GameMuster
+            </a>
+        </div>
+        <div class="col-auto"></div>
+        <div class="col-lg-2 align-content-center">
+            <button class="btn btn-outline-secondary btn-login"><a href="{% url 'login' %}">Log in</a></button>
+            <button class="btn btn-outline-secondary btn-signup"><a href="{% url 'signup' %}">Sign up</a></button>
+        </div>
+
+    </div>
 </nav>
-    {% block content %}{% block filter %}{% endblock %}{% endblock %}
+{% block content %}{% block filter %}{% endblock %}{% endblock %}
 </body>
 </html>

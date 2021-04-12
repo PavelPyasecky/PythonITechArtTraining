@@ -137,3 +137,6 @@ API_SECRET_KEY = os.getenv('API_SECRET_KEY')
 # Twitter API keys
 
 BEARER_TOKEN = os.getenv('BEARER_TOKEN')
+
+LOGIN_REDIRECT_URL = 'main'
+LOGOUT_REDIRECT_URL = 'main'
