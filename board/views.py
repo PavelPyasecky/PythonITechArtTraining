@@ -2,16 +2,15 @@ import datetime
 import gamestore.settings as settings
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .apiwrappers import TwitterWrapper, IgdbWrapper
+from .api import igdbapi, twitterapi
 
 
-twitter_wrapper = TwitterWrapper(settings.API_TWITTER_TOKEN)
-igdb_wrapper = IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
+twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
+igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
 
 
 class Game:
     def __init__(self, game_id):
-
         res = igdb_wrapper.get_game_by_id(game_id)[0]
 
         self.id = game_id
@@ -36,9 +35,7 @@ class Game:
             self.aggregated_rating = [res['aggregated_rating'], res['aggregated_rating_count']]
         else:
             self.aggregated_rating = ['', 0]
-
         self.slug = res['slug']
-
         self.tweets = None
 
 
@@ -74,7 +71,6 @@ def main(request):
     platforms = [int(item) for item in data.getlist('platforms')]
     genres = [int(item) for item in data.getlist('genres')]
     rating = [int(item) for item in data.getlist('rating')]
-    print(platforms, genres, rating)
     res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=rating)
 
     games = []
