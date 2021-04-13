@@ -3,15 +3,16 @@
   transition: all 0.2s ease;
   margin-left: 10px;
   margin-right: 10px;
+  border-color: #fff;
 }
 
 .btn-login {
-  background-color: #fff;
+  background-color: #dc3545;
 }
 
 .btn-signup {
-  background-color: #fff;
-  border-color: #fff;
+  background-color: #dc3545;
+  color: #fff;
 }
 
 .title-wrapper {

@@ -39,8 +39,8 @@ class Game:
         self.slug = res['slug']
 
         self.tweets = []
-        tweets_id = twitter_wrapper.get_tweets_by_string(self.slug)
-
+        # tweets_id = twitter_wrapper.get_tweets_by_string(self.slug)
+        tweets_id = []
         if tweets_id:
             for tweet_id in tweets_id[:8]:
                 self.tweets.append(Tweet(tweet_id))
