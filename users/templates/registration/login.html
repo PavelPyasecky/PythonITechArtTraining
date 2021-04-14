@@ -1,9 +1,37 @@
 {% extends 'layout/basic.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'admin/css/forms.css' %} "/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'admin/css/base.css' %} "/>
+{% endblock %}
+
 {% block content %}
-    <h2>Log In</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Log In</button>
-    </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4 align-content-center">
+                <div class="title-wrapper">
+                    <h2 class="text-middle">Log In</h2>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="field-wrapper">
+                        {{ form.username.errors }}
+                        <label for="{{ form.username.id_for_label }}">Username:</label>
+                        <div class="input-wrapper">{{ form.username }}</div>
+                    </div>
+                    <div class="field-wrapper">
+                        {{ form.password.errors }}
+                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        <div class="input-wrapper">{{ form.password }}</div>
+                    </div>
+                    <button class="btn btn-danger m-4 mx-lg-5" type="submit">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

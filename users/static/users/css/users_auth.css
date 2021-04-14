@@ -4,19 +4,34 @@
   margin-left: 10px;
   margin-right: 10px;
   border-color: #fff;
+  background-color: transparent;
+}
+.btn-signup:hover, .btn-login:hover {
+  background-color: #fff;
 }
 
-.btn-login {
-  background-color: #dc3545;
+.btn__link {
+  transition: all 0.2s ease;
 }
-
-.btn-signup {
-  background-color: #dc3545;
+.btn__link:visited {
   color: #fff;
+}
+.btn__link:hover {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.btn-login:hover .btn__link, .btn-signup:hover .btn__link {
+  color: #dc3545;
 }
 
 .title-wrapper {
-  margin: 25px 10px 0 0;
+  margin: 75px 25px 10px 0;
+}
+
+.field-wrapper {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 /*# sourceMappingURL=users_auth.css.map */

@@ -6,21 +6,51 @@
           href="{% static 'admin/css/forms.css' %} "/>
     <link rel="stylesheet" type="text/css"
           href="{% static 'admin/css/base.css' %} "/>
-
 {% endblock %}
 
-
 {% block content %}
-    <div class="container align-content-center">
-        <div class="text-wr">
-            <h2 class="text-middle">Sign up</h2>
-        </div>
-        <div class="text-release-wr">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Sign up</button>
-            </form>
+    <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4 align-content-center">
+                <div class="title-wrapper">
+                    <h2 class="text-middle">Sign up</h2>
+                </div>
+                <div class="text-release-wr">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="field-wrapper">
+                            {{ form.username.errors }}
+                            <label for="{{ form.username.id_for_label }}">Username:</label>
+                            <div class="input-wrapper">{{ form.username }}</div>
+                        </div>
+                        <div class="field-wrapper">
+                            {{ form.email.errors }}
+                            <label for="{{ form.email.id_for_label }}">Email:</label>
+                            <div class="input-wrapper">{{ form.email }}</div>
+                        </div>
+                        <div class="field-wrapper">
+                            {{ form.birthday.errors }}
+                            <label for="{{ form.birthday.id_for_label }}">Birthday:</label>
+                            <div class="input-wrapper">{{ form.birthday }}</div>
+                        </div>
+                        <div class="field-wrapper">
+                            {{ form.password1.errors }}
+                            <label for="{{ form.password1.id_for_label }}">Password</label>
+                            <div class="input-wrapper">{{ form.password1 }}</div>
+                        </div>
+                        <div class="field-wrapper">
+                            {{ form.password2.errors }}
+                            <label for="{{ form.password2.id_for_label }}">Password confirmation</label>
+                            <div class="input-wrapper">{{ form.password2 }}</div>
+                        </div>
+                        <button class="btn btn-success m-4 mx-5" type="submit">Sign up</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="col-4"></div>
+
 {% endblock content %}

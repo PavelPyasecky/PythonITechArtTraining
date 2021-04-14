@@ -6,16 +6,68 @@ $bg-btn: #dc3545
     left: 10px
     right: 10px
   border-color: #fff
+  background-color: transparent
+  &:hover
+    background-color: #fff
 
 .btn-login
   @extend %btn-base
-  background-color: $bg-btn
 
 .btn-signup
   @extend %btn-base
-  background-color: $bg-btn
-  color: #fff
+
+$font-size: 1rem
+.btn__link
+  &:visited
+    color: #fff
+  transition: all .2s ease
+  &:hover
+    font-size: $font-size * 1.2
+    font-weight: bold
+
+%btn-base:hover .btn__link
+  color: $bg-btn
 
 .title-wrapper
-  margin: 25px 10px 0 0
+  margin: 75px 25px 10px 0
+
+$m-field: 0px
+.field-wrapper
+  margin:
+    top: $m-field
+    bottom: $m-field
+
+
+
+
+
+
+
+//$status-colors: (primary: #000, success: #27BA6C, info: #03a9f4, warning: #FF8833, danger: #ff1a1a)
+//
+//.message
+//  @each $status, $color in $status-colors
+//    &--#{$status}
+//      background: $color
+//
+//p
+//  font: 10px/8px             // Явный CSS, деление отсутствует
+//  $width: 1000px
+//  width: $width/2            // Используется переменная, операция деления
+//  height: (500px/2)          // Обособление скобками, операция деления
+//  margin-left: 5px + 8px/2px // Используется +, операция деления
+//
+//$translucent-red: rgba(255, 0, 0, 0.5)
+//p
+//  color: opacify($translucent-red, 0.3)
+//  background-color: transparentize($translucent-red, 0.25)
+//
+//@mixin does-parent-exist
+//  @if &
+//    &:hover
+//      color: inherit
+//  @else
+//    a
+//      color: inherit
+
 
