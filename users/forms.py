@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 from django.contrib.admin import widgets
+from django.core.mail import send_mail
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -13,6 +14,14 @@ class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
         self.fields['birthday'].widget = widgets.AdminDateWidget()
+
+    # def save(self):
+    #     user = super().save()
+    #     # send_mail('Subject here', 'Here is the message.', 'from@example.com',
+    #     #           [user.email], fail_silently=False)
+    #     user.is_active = False
+    #     user.save()
+    #     return user
 
 
 class CustomUserChangeForm(UserChangeForm):
