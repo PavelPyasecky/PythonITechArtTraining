@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'users/css/users_auth.css' %}">
+</head>
+<body>
+{#    <div class="text-title">Confirmation</div>#}
+{#    <div class="title-wrapper">Your account has been activated!</div>#}
+<script>
+    alert('Your account has been activated!');
+    {% if error %}  {# It is for debugging #}
+        <h1>Error</h1>
+    {% endif %}
+</script>
+</body>
+</html>
+

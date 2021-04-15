@@ -140,3 +140,13 @@ BEARER_TOKEN = os.getenv('BEARER_TOKEN')
 
 LOGIN_REDIRECT_URL = 'main'
 LOGOUT_REDIRECT_URL = 'main'
+
+# Email settings
+
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.mail.ru')
+EMAIL_PORT = os.getenv('EMAIL_PORT', 465)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', True)
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
