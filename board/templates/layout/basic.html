@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'board/css/basic.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'users/css/users_auth.css' %}">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     {% block  styles %}{% endblock %}
     {% block scripts %}{% endblock %}
 
@@ -17,7 +18,7 @@
 <nav class="navbar navbar-light bg-danger nav">
     <div class="container-fluid">
 
-        <div class="col-lg-2 align-content-center">
+        <div class="col-lg-3 align-content-center">
             <a class="navbar-brand text-white font-monospace" href="{% url 'main' %}">
                 <img src="{% static 'board/img/logo.png' %}" alt="" width="30" height="24"
                      class="d-inline-block align-text-top">
@@ -25,11 +26,30 @@
             </a>
         </div>
         <div class="col-auto"></div>
-        <div class="col-lg-2 align-content-center">
-            <button class="btn btn-outline-secondary btn-login"><a class="btn__link" href="{% url 'login' %}">Log in</a></button>
-            <button class="btn btn-outline-secondary btn-signup"><a class="btn__link" href="{% url 'signup' %}">Sign up</a></button>
+        <div class="col-lg-3 align-content-center">
+            <button class="btn btn-outline-secondary btn-login">
+                {% if user.is_authenticated %}
+                    <a class="btn__link" href="{% url 'logout' %}">Log out</a>
+                {% else %}
+                    <a class="btn__link" href="{% url 'login' %}"> Log in</a>
+                {% endif %}
+            </button>
+            <button class="btn btn-outline-secondary btn-signup"><a class="btn__link" href="{% url 'signup' %}">Sign
+                up</a></button>
         </div>
-
+        <div class="col-3 align-content-center">
+            <button class="btn btn-secondary user-menu__btn" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                {{ user.username }}
+            </button>
+            <div class="collapse" id="collapseExample">
+                <div class="list-group user-menu__panel">
+                    <a class="list-group-item list-group-item-action user-menu__item " href="#">Profile</a>
+                    <a class="list-group-item list-group-item-action user-menu__item " href="#">Favorites</a>
+                    <a class="list-group-item list-group-item-action user-menu__item item-link" href="#">Settings</a>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 {% block content %}{% block filter %}{% endblock %}{% endblock %}

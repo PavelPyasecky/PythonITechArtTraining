@@ -59,7 +59,8 @@ def main(request):
         'filter_panel': filter_panel,
         'filter_initials': filter_initials,
         'page_obj': page_obj,
-        'page_numbers': paginator.page_range
+        'page_numbers': paginator.page_range,
+        'user': request.user
     }
     return render(request, 'board/main.html', context=context)
 
@@ -72,6 +73,7 @@ def detail(request, game_id):
         tweets = [Tweet(tweet) for tweet in tweets_id]
     context = {
         'game': game,
-        'tweets': tweets
+        'tweets': tweets,
+        'user': request.user
     }
     return render(request, 'board/detail.html', context=context)

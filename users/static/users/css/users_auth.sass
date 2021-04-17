@@ -1,4 +1,5 @@
 $bg-btn: #dc3545
+$font-size: 1rem
 %btn-base
   display: inline-block
   transition: all .2s ease
@@ -16,8 +17,8 @@ $bg-btn: #dc3545
 .btn-signup
   @extend %btn-base
 
-$font-size: 1rem
 .btn__link
+  color: #fff
   &:visited
     color: #fff
   transition: all .2s ease
@@ -31,43 +32,47 @@ $font-size: 1rem
 .title-wrapper
   margin: 75px 25px 10px 0
 
-$m-field: 0px
-.field-wrapper
+// Decorating inputs form
+
+.field-wrapper input
+  border: 1px solid #ccc
+  border-radius: 4px
+  padding: 5px 6px
+  margin-top: 0
+
+%btn-menu-base
+  background-color: transparent
+  border-color: transparent
+
+.user-menu__btn
+  @extend %btn-menu-base
+  display: inline-block
+  transition: all .2s ease
+  font-size: $font-size * 1.2
   margin:
-    top: $m-field
-    bottom: $m-field
+    left: 160px
+    right: 10px
+  &:hover, &:active
+    @extend %btn-menu-base
+    font-size: $font-size * 1.5
+    font-weight: bold
+  &:focus
+    @extend %btn-menu-base
+    font-weight: bold
 
+.user-menu__panel
+  position: fixed
+  right: 0
+  top: 70px
+  background: $bg-btn
+  width: 320px
+  box-shadow: 10px 0 20px rgba(0,0,0,0.4)
+  color: #FFF
 
-
-
-
-
-
-//$status-colors: (primary: #000, success: #27BA6C, info: #03a9f4, warning: #FF8833, danger: #ff1a1a)
-//
-//.message
-//  @each $status, $color in $status-colors
-//    &--#{$status}
-//      background: $color
-//
-//p
-//  font: 10px/8px             // Явный CSS, деление отсутствует
-//  $width: 1000px
-//  width: $width/2            // Используется переменная, операция деления
-//  height: (500px/2)          // Обособление скобками, операция деления
-//  margin-left: 5px + 8px/2px // Используется +, операция деления
-//
-//$translucent-red: rgba(255, 0, 0, 0.5)
-//p
-//  color: opacify($translucent-red, 0.3)
-//  background-color: transparentize($translucent-red, 0.25)
-//
-//@mixin does-parent-exist
-//  @if &
-//    &:hover
-//      color: inherit
-//  @else
-//    a
-//      color: inherit
-
-
+.user-menu__item
+  background: $bg-btn
+  color: #fff
+  text-decoration: none
+  &:hover
+    background: #fff
+    color: $bg-btn

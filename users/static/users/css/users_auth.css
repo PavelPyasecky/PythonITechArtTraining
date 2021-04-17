@@ -11,6 +11,7 @@
 }
 
 .btn__link {
+  color: #fff;
   transition: all 0.2s ease;
 }
 .btn__link:visited {
@@ -29,9 +30,51 @@
   margin: 75px 25px 10px 0;
 }
 
-.field-wrapper {
-  margin-top: 0px;
-  margin-bottom: 0px;
+.field-wrapper input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 6px;
+  margin-top: 0;
+}
+
+.user-menu__btn:focus, .user-menu__btn:hover, .user-menu__btn:active, .user-menu__btn {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.user-menu__btn {
+  display: inline-block;
+  transition: all 0.2s ease;
+  font-size: 1.2rem;
+  margin-left: 160px;
+  margin-right: 10px;
+}
+.user-menu__btn:hover, .user-menu__btn:active {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.user-menu__btn:focus {
+  font-weight: bold;
+}
+
+.user-menu__panel {
+  position: fixed;
+  right: 0;
+  top: 70px;
+  background: #dc3545;
+  width: 320px;
+  box-shadow: 10px 0 20px rgba(0, 0, 0, 0.4);
+  color: #FFF;
+}
+
+.user-menu__item {
+  background: #dc3545;
+  color: #fff;
+  text-decoration: none;
+}
+.user-menu__item:hover {
+  background: #fff;
+  color: #dc3545;
 }
 
 /*# sourceMappingURL=users_auth.css.map */
