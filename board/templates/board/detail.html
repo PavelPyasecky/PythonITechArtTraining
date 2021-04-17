@@ -89,8 +89,8 @@
         <div class="col-sm-3 mt-lg-5">
             <div class="text-wr">
                 <p class="text-middle">#{{ game.name|truncatewords:2 }} Tweets</p>
-            {% if game.tweets %}
-                {% for tweet in game.tweets %}
+            {% if tweets %}
+                {% for tweet in tweets %}
                     <div class="card card-text card-color-tweets">
                         <span class="text-light">{{ tweet.text }}</span>
                         <label class="category">

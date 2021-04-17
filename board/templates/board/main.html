@@ -21,7 +21,7 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" id="{{ platform.id }}"
                                            name="platforms" value="{{ platform.id }}"
-                                            {% if platform.id in initials.platforms %} checked {% endif %}>
+                                            {% if platform.id in filter_initials.platforms %} checked {% endif %}>
                                     <label class="form-check-label"
                                            for="{{ platform.id }}">{{ platform.name }}</label>
                                 </div>
@@ -31,15 +31,15 @@
                             <div>
                                 <select class="form-select " aria-label="Default select example" name="genres">
                                     {% for genre in filter_panel.genres %}
-                                        <option  {% if genre.id == initials.genres %} selected {% endif %}
+                                        <option  {% if genre.id in filter_initials.genres %} selected {% endif %}
                                                                                       value={{ genre.id }}>{{ genre.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="side-item">
                                 <label for="customRange3" class="form-label">User rating:</label>
-                                <input type="range" class="form-range" min="0" max="100" {% if initials.rating >= 0 %}
-                                       value="{{ initials.rating }}" {% endif %} step="10" id="customRange3"
+                                <input type="range" class="form-range" min="0" max="100" {% if filter_initials.rating.0 >= 0 %}
+                                       value="{{ filter_initials.rating.0 }}" {% endif %} step="10" id="customRange3"
                                        name="rating">
                             </div>
                             <hr class="dropdown-divider">

@@ -131,12 +131,13 @@ STATIC_URL = '/static/'
 
 # IGDB API keys
 
-API_CLIENT_ID = os.getenv('API_CLIENT_ID')
-API_SECRET_KEY = os.getenv('API_SECRET_KEY')
+API_IGDB_CLIENT_ID = os.getenv('API_IGDB_CLIENT_ID')
+API_IGDB_TOKEN = os.getenv('API_IGDB_TOKEN')
 
 # Twitter API keys
 
-BEARER_TOKEN = os.getenv('BEARER_TOKEN')
+API_TWITTER_TOKEN = os.getenv('API_TWITTER_TOKEN')
+
 
 LOGIN_REDIRECT_URL = 'main'
 LOGOUT_REDIRECT_URL = 'main'
