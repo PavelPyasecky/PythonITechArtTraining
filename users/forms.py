@@ -1,4 +1,4 @@
-from django import forms
+from datetime import timedelta, datetime
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
@@ -18,10 +18,10 @@ class CustomUserCreationForm(UserCreationForm):
 
     def save(self):
         user = super().save()
-        self._send_auth_mail(user)
+        self.send_auth_mail(user)
         return user
 
-    def _send_auth_mail(self, user):
+    def send_auth_mail(self, user):
         context = {
             'username': user.username,
             'activation_link': self._build_activation_link(user),
@@ -31,7 +31,8 @@ class CustomUserCreationForm(UserCreationForm):
 
     @staticmethod
     def _build_activation_link(user):
-        url = f'{ACCOUNT_ACTIVATION_URL}{user.id}'
+        now = datetime.now().timestamp()
+        url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/{now}'
         return url
 
 

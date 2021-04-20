@@ -37,10 +37,12 @@
                 </button>
             </div>
             <div class="col-4 gx-lg-5 text-align-center">
-                <button class="btn btn-secondary user-menu__btn" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    {{ user.username }}
-                </button>
+                {% if user %}
+                    <button class="btn btn-secondary user-menu__btn" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        {{ user.username }}
+                    </button>
+                {% endif %}
                 <div class="collapse" id="collapseExample">
                     <div class="list-group user-menu__panel">
                         <a class="list-group-item list-group-item-action user-menu__item " href="#">Profile</a>

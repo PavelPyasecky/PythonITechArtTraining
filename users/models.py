@@ -6,4 +6,4 @@ from django.db import models
 class CustomUser(AbstractUser):
     birthday = models.DateField('%m/%d/%y')
     is_active = models.BooleanField(default=False)
-    activate_date = models.DateTimeField(default=None, null=True)
+    activate_time = models.DateTimeField(default=None, null=True)
