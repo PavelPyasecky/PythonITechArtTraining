@@ -58,6 +58,7 @@
 }
 
 .user-menu__panel {
+  transition: all 0.2s ease;
   position: fixed;
   right: 0;
   top: 70px;
@@ -75,6 +76,10 @@
 .user-menu__item:hover {
   background: #fff;
   color: #dc3545;
+}
+
+.text-align-center {
+  text-align: center;
 }
 
 /*# sourceMappingURL=users_auth.css.map */

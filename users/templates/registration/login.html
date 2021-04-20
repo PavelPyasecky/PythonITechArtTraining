@@ -8,28 +8,37 @@
 
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4 align-content-center">
-                <div class="title-wrapper">
-                    <h2 class="text-middle">Log In</h2>
-                </div>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.non_field_errors }}
-                    <div class="field-wrapper">
-                        {{ form.username.errors }}
-                        <label for="{{ form.username.id_for_label }}">Username:</label>
-                        <div class="input-wrapper">{{ form.username }}</div>
-                    </div>
-                    <div class="field-wrapper">
-                        {{ form.password.errors }}
-                        <label for="{{ form.password.id_for_label }}">Password</label>
-                        <div class="input-wrapper">{{ form.password }}</div>
-                    </div>
-                    <button class="btn btn-danger m-4 mx-lg-5" type="submit">Log In</button>
-                </form>
+    {% if nextstep %}
+    <div class="row">
+        <div class="card my-5">
+            <div class="card-body text-align-center">
+                Hey, check your email. A confirmation letter has been sent!
             </div>
         </div>
     </div>
-{% endblock content %}
+    {% endif %}
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4 align-content-center">
+            <div class="title-wrapper">
+                <h2 class="text-middle">Log In</h2>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="field-wrapper">
+                    {{ form.username.errors }}
+                    <label for="{{ form.username.id_for_label }}">Username:</label>
+                    <div class="input-wrapper">{{ form.username }}</div>
+                </div>
+                <div class="field-wrapper">
+                    {{ form.password.errors }}
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    <div class="input-wrapper">{{ form.password }}</div>
+                </div>
+                <button class="btn btn-danger m-4 mx-lg-5" type="submit">Log In</button>
+            </form>
+        </div>
+    </div>
+    </div>
+{% endblock %}

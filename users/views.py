@@ -10,11 +10,13 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'users/signup.html'
 
+    def form_valid(self, form):
+        super().form_valid(form)
+        return render(self.request, 'registration/login.html', context={'nextstep': True})  # In progress ----------
 
-def account_activation(request, user_hash):
-    print('Hash: ', user_hash)
-    user = CustomUser.objects.get(password=user_hash)
-    print('User: ', user)
+
+def account_activation(request, user_id):
+    user = CustomUser.objects.get(id=user_id)
     if user:
         user.is_active = True
         user.save()

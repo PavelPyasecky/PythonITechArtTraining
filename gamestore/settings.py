@@ -150,4 +150,9 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', True)
 
+# Account activation URL
+
+ACCOUNT_ACTIVATION_URL = 'http://localhost:8000/users/activate/'  # Production - https://
+
+
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

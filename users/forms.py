@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
+from gamestore.settings import ACCOUNT_ACTIVATION_URL
 from django.contrib.admin import widgets
 from django.template.loader import render_to_string
 
@@ -26,13 +27,11 @@ class CustomUserCreationForm(UserCreationForm):
             'activation_link': self._build_activation_link(user),
         }
         html_body = render_to_string('users/email.html', context)
-        user.email_user('Account activation', 'Hello world!', html_message=html_body)
+        user.email_user('Account activation', 'Confirmation', html_message=html_body)
 
     @staticmethod
     def _build_activation_link(user):
-        url = f'http://localhost:8000/users/activate/{user.password}'    # Production - https://
-        print('Hash -> ', user.password)
-        print('Activation link -> ', url)
+        url = f'{ACCOUNT_ACTIVATION_URL}{user.id}'
         return url
 
 
