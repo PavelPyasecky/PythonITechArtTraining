@@ -7,3 +7,4 @@ class CustomUser(AbstractUser):
     birthday = models.DateField('%m/%d/%y')
     is_active = models.BooleanField(default=False)
     activate_time = models.DateTimeField(default=None, null=True)
+    link_time = models.DateTimeField(default=None, null=True)

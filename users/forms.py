@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from django.utils import timezone
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUser
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
@@ -31,8 +31,10 @@ class CustomUserCreationForm(UserCreationForm):
 
     @staticmethod
     def _build_activation_link(user):
-        now = datetime.now().timestamp()
-        url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/{now}'
+        now = timezone.now()
+        user.link_time = now
+        user.save()
+        url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/'
         return url
 
 
