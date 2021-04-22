@@ -19,9 +19,9 @@
     {% endif %}
     <div class="row">
         <div class="col-4"></div>
-        <div class="col-4 align-content-center">
+        <div class="col-4 text-align-center">
             <div class="title-wrapper">
-                <h2 class="text-middle">Log In</h2>
+                <h2 class="text-middle text-align-center">Log In</h2>
             </div>
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
@@ -29,14 +29,17 @@
                 <div class="field-wrapper">
                     {{ form.username.errors }}
                     <label for="{{ form.username.id_for_label }}">Username:</label>
-                    <div class="input-wrapper">{{ form.username }}</div>
+                    <div class="input-wrapper text-align-center">{{ form.username }}</div>
                 </div>
-                <div class="field-wrapper">
+                <div class="field-wrapper ">
                     {{ form.password.errors }}
-                    <label for="{{ form.password.id_for_label }}">Password</label>
-                    <div class="input-wrapper">{{ form.password }}</div>
+                    <label for="{{ form.password.id_for_label }}">Password:</label>
+                    <div class="input-wrapper text-align-center">{{ form.password }}</div>
                 </div>
-                <button class="btn btn-danger m-4 mx-lg-5" type="submit">Log In</button>
+                <div class="align-items-center text-align-center">
+                    <button class="btn btn-danger m-4 mx-lg-2" type="submit">Log In</button>
+                    <a class="btn btn-light m-4 mx-lg-2" href="{% url 'password_reset' %}">Reset password</a>
+                </div>
             </form>
         </div>
     </div>

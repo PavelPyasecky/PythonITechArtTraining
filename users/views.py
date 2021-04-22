@@ -80,5 +80,6 @@ def get_user_profile(request):
     context = {
         'user': user,
         'user_data': user_data,
+        'next': 'password_change_done',
     }
     return render(request, 'users/profile.html', context)
