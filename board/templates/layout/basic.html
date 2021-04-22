@@ -30,9 +30,9 @@
                         <a class="btn__link" href="{% url 'logout' %}">Log out</a>
                     {% else %}
                         <a class="btn__link" href="{% url 'login' %}"> Log in</a>
-                        <button class="btn btn-outline-secondary btn-signup"><a class="btn__link"
-                                                                                href="{% url 'signup' %}">Sign
-                            up</a></button>
+                        <button class="btn btn-outline-secondary btn-signup">
+                            <a class="btn__link" href="{% url 'signup' %}">Sign up</a>
+                        </button>
                     {% endif %}
                 </button>
             </div>
@@ -45,7 +45,7 @@
                 {% endif %}
                 <div class="collapse" id="collapseExample">
                     <div class="list-group user-menu__panel">
-                        <a class="list-group-item list-group-item-action user-menu__item " href="#">Profile</a>
+                        <a class="list-group-item list-group-item-action user-menu__item " href="{% url 'profile' %}">Profile</a>
                         <a class="list-group-item list-group-item-action user-menu__item " href="#">Favorites</a>
                         <a class="list-group-item list-group-item-action user-menu__item item-link"
                            href="#">Settings</a>

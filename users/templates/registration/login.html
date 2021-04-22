@@ -23,7 +23,7 @@
             <div class="title-wrapper">
                 <h2 class="text-middle">Log In</h2>
             </div>
-            <form method="post">
+            <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
                 <div class="field-wrapper">

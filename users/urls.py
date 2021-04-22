@@ -1,9 +1,10 @@
-from django.urls import path, re_path
+from django.urls import path
+from users import views
 
-from .views import SignUpView, account_activation, resend_auth_mail
 
 urlpatterns = [
-    path('signup/', SignUpView.as_view(), name='signup'),
-    path('reactivate/<slug:user_id>/', resend_auth_mail, name='reactivation'),
-    path('activate/<slug:user_id>/', account_activation, name='activation'),
+    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('reactivate/<slug:user_id>/', views.resend_auth_mail, name='reactivation'),
+    path('activate/<slug:user_id>/', views.account_activation, name='activation'),
+    path('profile/', views.get_user_profile, name='profile'),
 ]

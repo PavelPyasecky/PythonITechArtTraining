@@ -1,5 +1,5 @@
 from django.utils import timezone
-from datetime import timedelta, datetime
+from datetime import timedelta
 from django.urls import reverse_lazy
 from django.views import generic
 from django.shortcuts import render
@@ -16,9 +16,8 @@ class SignUpView(generic.CreateView):
     template_name = 'users/signup.html'
 
     def form_valid(self, form):
-        data_form = super().form_valid(form)
-        form = AuthenticationForm(request=None)
-        print(form.__dict__)
+        super().form_valid(form)
+        form = AuthenticationForm()
         return render(self.request, 'registration/login.html', context={'nextstep': True, 'form': form})
 
 
@@ -43,7 +42,7 @@ def account_activation(request, user_id):
             }
         else:
             user.is_active = True
-            user.activate_time = datetime.now()
+            user.activate_time = timezone.now()
             user.save()
             context = {
                 'title': 'Congratulations!',
@@ -56,8 +55,10 @@ def account_activation(request, user_id):
 
 def resend_auth_mail(request, user_id):
     user = CustomUser.objects.get(id=user_id)
-    now = datetime.now().timestamp()
-    url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/{now}'
+    now = timezone.now()
+    user.link_time = now
+    user.save()
+    url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/'
     context = {
         'username': user.username,
         'activation_link': url,
@@ -66,3 +67,18 @@ def resend_auth_mail(request, user_id):
     user.email_user('Account activation', 'Confirmation', html_message=html_body)
 
     return render(request, 'registration/login.html', context={'nextstep': True})
+
+
+def get_user_profile(request):
+    user = request.user
+    user_data = {
+        'username': user.username,
+        'email': user.email,
+        'birthday': user.birthday,
+        'password': user.password
+    }
+    context = {
+        'user': user,
+        'user_data': user_data,
+    }
+    return render(request, 'users/profile.html', context)
