@@ -30,7 +30,7 @@
   margin: 75px 25px 10px 0;
 }
 
-.field-wrapper input {
+.input-wrapper input {
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 5px 6px;
@@ -60,6 +60,7 @@
 .user-menu__panel {
   transition: all 0.2s ease;
   position: fixed;
+  z-index: 100;
   right: 0;
   top: 70px;
   background: #dc3545;
@@ -88,6 +89,18 @@
 
 .btn-password-change {
   display: inline;
+}
+
+.error-text-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 6px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.card-width-max {
+  width: max-content;
 }
 
 /*# sourceMappingURL=users_auth.css.map */

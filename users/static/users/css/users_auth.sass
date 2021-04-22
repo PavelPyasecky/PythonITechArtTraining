@@ -34,7 +34,7 @@ $font-size: 1rem
 
 // Decorating inputs form
 
-.field-wrapper input
+.input-wrapper input
   border: 1px solid #ccc
   border-radius: 4px
   padding: 5px 6px
@@ -63,6 +63,7 @@ $font-size: 1rem
 .user-menu__panel
   transition: all .2s ease
   position: fixed
+  z-index: 100
   right: 0
   top: 70px
   background: $bg-btn
@@ -86,3 +87,14 @@ $font-size: 1rem
 
 .btn-password-change
   display: inline
+
+.error-text-wrapper
+  border: 1px solid #ccc
+  border-radius: 4px
+  padding: 5px 6px
+  margin:
+    top: 15px
+    bottom: 20px
+
+.card-width-max
+  width: max-content
