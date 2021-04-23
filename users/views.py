@@ -88,3 +88,13 @@ def get_user_profile(request):
         'next': 'password_change_done',
     }
     return render(request, 'users/profile.html', context)
+
+
+def get_user_favourite(request):
+    user = request.user
+    profile = user.userprofile
+    print(profile)
+    context = {
+        'games': profile,
+    }
+    return render(request, 'users/profile.html', context)
