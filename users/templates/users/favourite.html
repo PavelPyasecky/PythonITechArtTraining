@@ -7,20 +7,31 @@
         <div class="row">
             <div class="col-lg-4"></div>
             <div class="col-lg-4">
-                <div class="list-group">
-                    {% for game in games %}
-                    <div class="list-group-item list-group-item-action active" aria-current="true">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ game.name }}</h5>
-                            <small>
-                                <button class="btn btn-danger m-4 mx-lg-2">delete</button>
-                            </small>
-                        </div>
-                        <p class="mb-1">{{ game.full_description|truncatewords:6 }}</p>
-                        <small>{{ game.genres|join:' ' }}</small>
-                    </div>
-                    {% endfor %}
+                <div class="title-wrapper">
+                    <h2 class="text-middle">Your favourite games:</h2>
                 </div>
+                {% if empty %}
+                    <div class="card my-5">
+                        <div class="card-body text-align-center">
+                            {{ empty }}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="list-group">
+                        {% for game in games %}
+                            <div class="list-group-item list-group-item-action active" aria-current="true">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ game.name }}</h5>
+                                    <small>
+                                        <button class="btn btn-danger m-4 mx-lg-2">delete</button>
+                                    </small>
+                                </div>
+                                <p class="mb-1">{{ game.full_description|truncatewords:6 }}</p>
+                                <small>{{ game.genres|join:' ' }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <div class="col-lg-4"></div>
         </div>

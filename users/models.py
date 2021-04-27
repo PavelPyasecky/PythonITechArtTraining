@@ -16,9 +16,9 @@ class UserProfile(models.Model):
                                 primary_key=True)
 
 
-class Game(models.Model):
+class UserGame(models.Model):
     id = models.IntegerField(primary_key=True)
-    reporter = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='games')
 
 
 def create_user_profile(sender, instance, created, **kwargs):

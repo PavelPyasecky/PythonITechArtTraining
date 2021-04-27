@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import main, detail
+from board import views
 
 urlpatterns = [
-    path('', main, name='main'),
-    path('<int:game_id>/detail/', detail, name='detail'),
+    path('', views.main, name='main'),
+    path('<int:game_id>/detail/', views.detail, name='detail'),
+    path('<int:game_id>/detail/add/', views.add_to_favourite, name='add'),
+    path('<int:game_id>/detail/delete/', views.del_from_favourite, name='delete'),
 ]

@@ -9,6 +9,7 @@ from django.contrib.auth import views
 from .models import CustomUser
 from .forms import CustomUserCreationForm
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
+from board.logic.game import Game
 
 
 class SignUpView(generic.CreateView):
@@ -23,7 +24,6 @@ class SignUpView(generic.CreateView):
 
 
 # class CustomPasswordResetView(views.PasswordResetView):
-
 
 
 def account_activation(request, user_id):
@@ -93,8 +93,16 @@ def get_user_profile(request):
 def get_user_favourite(request):
     user = request.user
     profile = user.userprofile
-    print(profile)
-    context = {
-        'games': profile,
-    }
-    return render(request, 'users/profile.html', context)
+    favourite_games = profile.games.all()
+    game_list = []
+    for item in favourite_games:
+        game_list.append(Game(item.id))
+    if favourite_games:
+        context = {
+            'games': game_list,
+        }
+    else:
+        context = {
+            'empty': 'There is no games here!',
+        }
+    return render(request, 'users/favourite.html', context)

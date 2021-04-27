@@ -96,6 +96,9 @@
 .btn-effect {
 	transition-duration: 0.2s;
 }
+.btn-must {
+	display: inherit;
+}
 .btn-effect:hover,
 .btn-effect:active,
 .btn-effect:focus {

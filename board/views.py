@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
 from .logic.game import Game
 from .logic.tweet import Tweet
+from users.models import UserGame
 
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
@@ -65,15 +66,65 @@ def main(request):
     return render(request, 'board/main.html', context=context)
 
 
-def detail(request, game_id):
+def get_tweets(request, game_id):
     game = Game(game_id)
     tweets = []
     tweets_id = twitter_wrapper.get_tweets_by_string(game.slug)
     if tweets_id:
         tweets = [Tweet(tweet) for tweet in tweets_id]
+    else:
+        None
+    return tweets
+
+
+def detail(request, game_id):
+    game = Game(game_id)
+    tweets = get_tweets(request, game_id)
     context = {
         'game': game,
         'tweets': tweets,
         'user': request.user
+    }
+    user_profile = request.user.userprofile
+    user_games = user_profile.games
+    game_list = user_games.filter(id=game_id)
+    if game_list:
+        context['tick'] = True
+    else:
+        context['tick'] = False
+    return render(request, 'board/detail.html', context=context)
+
+
+def add_to_favourite(request, game_id):
+    favourite_game = UserGame()
+    favourite_game.id = game_id
+    user_profile = request.user.userprofile
+    favourite_game.user_profile = user_profile
+    favourite_game.save()
+
+    game = Game(game_id)
+    tweets = get_tweets(request, game_id)
+    context = {
+        'game': game,
+        'tweets': tweets,
+        'user': request.user,
+        'tick': True
+    }
+    return render(request, 'board/detail.html', context=context)
+
+
+def del_from_favourite(request, game_id):
+    favourite_game = UserGame.objects.filter(id=game_id)
+    if favourite_game:
+        favourite_game.delete()
+
+    game = Game(game_id)
+    print(game)
+    tweets = get_tweets(request, game_id)
+    context = {
+        'game': game,
+        'tweets': tweets,
+        'user': request.user,
+        'tick': False
     }
     return render(request, 'board/detail.html', context=context)
