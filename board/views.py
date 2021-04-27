@@ -1,10 +1,11 @@
 import gamestore.settings as settings
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
 from .logic.game import Game
 from .logic.tweet import Tweet
 from users.models import UserGame
+from users.views import get_games_id_list
 
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
@@ -117,13 +118,26 @@ def del_from_favourite(request, game_id):
     favourite_game = UserGame.objects.filter(id=game_id)
     if favourite_game:
         favourite_game.delete()
+    ref_page = request.META.get('HTTP_REFERER')
 
-    game = Game(game_id)
-    tweets = get_tweets(request, game_id)
-    context = {
-        'game': game,
-        'tweets': tweets,
-        'user': request.user,
-        'tick': False
-    }
-    return render(request, 'board/detail.html', context=context)
+    if 'detail' in ref_page:
+        game = Game(game_id)
+        tweets = get_tweets(request, game_id)
+        context = {
+            'game': game,
+            'tweets': tweets,
+            'user': request.user,
+            'tick': False
+        }
+        return render(request, 'board/detail.html', context=context)
+    else:
+        game_list = get_games_id_list(request)
+        if game_list:
+            context = {
+                'games': game_list,
+            }
+        else:
+            context = {
+                'empty': 'There is no games here!',
+            }
+        return redirect('http://127.0.0.1:8000/users/favourite/', context)

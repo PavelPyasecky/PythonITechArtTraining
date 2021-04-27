@@ -87,13 +87,8 @@ def get_user_profile(request):
 
 
 def get_user_favourite(request):
-    user = request.user
-    profile = user.userprofile
-    favourite_games = profile.games.all()
-    game_list = []
-    for item in favourite_games:
-        game_list.append(Game(item.id))
-    if favourite_games:
+    game_list = get_games_id_list(request)
+    if game_list:
         context = {
             'games': game_list,
         }
@@ -102,3 +97,16 @@ def get_user_favourite(request):
             'empty': 'There is no games here!',
         }
     return render(request, 'users/favourite.html', context)
+
+
+def get_games_id_list(request):
+    user = request.user
+    profile = user.userprofile
+    favourite_games = profile.games.all()
+    game_list = []
+    for item in favourite_games:
+        game_list.append(Game(item.id))
+    if game_list:
+        return game_list
+    else:
+        return None
