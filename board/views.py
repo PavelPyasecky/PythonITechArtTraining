@@ -86,6 +86,9 @@ def detail(request, game_id):
         'tweets': tweets,
         'user': request.user
     }
+    if request.user.is_anonymous:
+        return render(request, 'board/detail.html', context=context)
+
     user_profile = request.user.userprofile
     user_games = user_profile.games
     game_list = user_games.filter(id=game_id)
