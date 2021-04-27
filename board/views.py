@@ -119,7 +119,6 @@ def del_from_favourite(request, game_id):
         favourite_game.delete()
 
     game = Game(game_id)
-    print(game)
     tweets = get_tweets(request, game_id)
     context = {
         'game': game,

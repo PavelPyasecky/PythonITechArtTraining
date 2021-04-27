@@ -5,7 +5,6 @@ from django.views import generic
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import views
 from .models import CustomUser
 from .forms import CustomUserCreationForm
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
@@ -21,9 +20,6 @@ class SignUpView(generic.CreateView):
         super().form_valid(form)
         form = AuthenticationForm()
         return render(self.request, 'registration/login.html', context={'nextstep': True, 'form': form})
-
-
-# class CustomPasswordResetView(views.PasswordResetView):
 
 
 def account_activation(request, user_id):

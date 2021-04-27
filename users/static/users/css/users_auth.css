@@ -103,4 +103,20 @@
   width: max-content;
 }
 
+.btn-inline-block {
+  padding-left: 0;
+  margin-left: 0;
+  display: inline-block;
+}
+
+.flex-container-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-container-column {
+  display: flex;
+  flex-direction: column;
+}
+
 /*# sourceMappingURL=users_auth.css.map */
