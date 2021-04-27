@@ -6,7 +6,8 @@ from .logic.game import Game
 from .logic.tweet import Tweet
 from users.models import UserGame
 from users.views import get_games_id_list
-
+from django.urls import reverse, reverse_lazy
+from django.contrib.sites.shortcuts import get_current_site
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
@@ -143,4 +144,5 @@ def del_from_favourite(request, game_id):
             context = {
                 'empty': 'There is no games here!',
             }
-        return redirect('http://127.0.0.1:8000/users/favourite/', context)
+        current_site = get_current_site(request)
+        return redirect(f'http://{current_site}/users/favourite/', context)
