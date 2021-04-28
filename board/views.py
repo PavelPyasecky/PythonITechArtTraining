@@ -4,8 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
 from .logic.game import Game
 from .logic.tweet import Tweet
-from users.models import UserGame
-from users.views import get_games_id_list
+from .models import Favourite
 from django.contrib.sites.shortcuts import get_current_site
 
 
@@ -25,6 +24,54 @@ class Filter:
         if res_genres:
             self.genres.insert(0, {'id': 0, 'name': 'Any'})
         self.platforms = res_platforms
+
+
+class FavouriteGame:
+    def __init__(self, user):
+        self.user = user
+        self.favourite_games = self.user.favourite_games.all()
+
+    def get_detail(self, game_id):
+        favourite_game = Favourite.objects.filter(game_id=game_id).first()
+        is_favourite = bool(favourite_game)
+        context = self._get_context(game_id, is_favourite)
+        return context
+
+    def add_to_favourite(self, game_id):
+        Favourite.objects.create(game_id=game_id, user=self.user)
+        context = self._get_context(game_id, True)
+        return context
+
+    def del_from_favourite(self, game_id, ref_page):
+        favourite_game = Favourite.objects.filter(game_id=game_id).first()
+        if favourite_game:
+            favourite_game.delete()
+
+        if 'detail' in ref_page:
+            context = self._get_context(game_id, False)
+        else:
+            context = {
+                'games': self.favourite_games,
+            }
+        return context
+
+    def _get_context(self, game_id, is_favourite):
+        game = Game(game_id)
+        tweets = self._get_tweets(game.slug)
+        context = {
+            'game': game,
+            'tweets': tweets,
+            'user': self.user,
+            'is_favourite': is_favourite
+        }
+        return context
+
+    @staticmethod
+    def _get_tweets(game_slug):
+        tweets_id = twitter_wrapper.get_tweets_by_string(game_slug)
+        if tweets_id:
+            return [Tweet(tweet) for tweet in tweets_id]
+        return None
 
 
 def main(request):
@@ -68,78 +115,34 @@ def main(request):
     return render(request, 'board/main.html', context=context)
 
 
-def get_tweets(request, game_id):
-    game = Game(game_id)
-    tweets = []
-    tweets_id = twitter_wrapper.get_tweets_by_string(game.slug)
-    if tweets_id:
-        tweets = [Tweet(tweet) for tweet in tweets_id]
-    else:
-        None
-    return tweets
-
-
 def detail(request, game_id):
-    game = Game(game_id)
-    tweets = get_tweets(request, game_id)
-    context = {
-        'game': game,
-        'tweets': tweets,
-        'user': request.user
-    }
-    user_profile = request.user.userprofile
-    user_games = user_profile.games
-    game_list = user_games.filter(id=game_id)
-    if game_list:
-        context['tick'] = True
-    else:
-        context['tick'] = False
+    user = request.user
+    favourites = FavouriteGame(user)
+    context = favourites.get_detail(game_id)
     return render(request, 'board/detail.html', context=context)
 
 
 def add_to_favourite(request, game_id):
-    favourite_game = UserGame()
-    favourite_game.id = game_id
-    user_profile = request.user.userprofile
-    favourite_game.user_profile = user_profile
-    favourite_game.save()
-
-    game = Game(game_id)
-    tweets = get_tweets(request, game_id)
-    context = {
-        'game': game,
-        'tweets': tweets,
-        'user': request.user,
-        'tick': True
-    }
+    user = request.user
+    favourites = FavouriteGame(user)
+    context = favourites.add_to_favourite(game_id)
     return render(request, 'board/detail.html', context=context)
 
 
 def del_from_favourite(request, game_id):
-    favourite_game = UserGame.objects.filter(id=game_id)
-    if favourite_game:
-        favourite_game.delete()
+    user = request.user
+    favourites = FavouriteGame(user)
     ref_page = request.META.get('HTTP_REFERER')
-
+    context = favourites.del_from_favourite(game_id, ref_page)
+    current_site = get_current_site(request)
     if 'detail' in ref_page:
-        game = Game(game_id)
-        tweets = get_tweets(request, game_id)
-        context = {
-            'game': game,
-            'tweets': tweets,
-            'user': request.user,
-            'tick': False
-        }
         return render(request, 'board/detail.html', context=context)
-    else:
-        game_list = get_games_id_list(request)
-        if game_list:
-            context = {
-                'games': game_list,
-            }
-        else:
-            context = {
-                'empty': 'There is no games here!',
-            }
-        current_site = get_current_site(request)
-        return redirect(f'http://{current_site}/users/favourite/', context)
+    return redirect(f'http://{current_site}/favourite/', context=context)
+
+
+def get_user_favourite(request):
+    game_list = [Game(item.game_id) for item in request.user.favourite_games.all()]
+    context = {
+        'games': game_list,
+    }
+    return render(request, 'board/favourite.html', context)

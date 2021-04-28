@@ -8,22 +8,4 @@ class CustomUser(AbstractUser):
     birthday = models.DateField('%m/%d/%y')
     is_active = models.BooleanField(default=False)
     activate_time = models.DateTimeField(default=None, null=True)
-    link_time = models.DateTimeField(default=None, null=True)
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,
-                                primary_key=True)
-
-
-class UserGame(models.Model):
-    id = models.IntegerField(primary_key=True)
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='games')
-
-
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-
-post_save.connect(create_user_profile, sender=CustomUser)
+    activation_link_time = models.DateTimeField(default=None, null=True)

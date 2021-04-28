@@ -25,7 +25,7 @@ class SignUpView(generic.CreateView):
 def account_activation(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     delta = timedelta(hours=3)
-    difference = timezone.now() - user.link_time
+    difference = timezone.now() - user.activation_link_time
     context = {
         'title': 'Something goes wrong...',
         'text': 'Your activation link has expired. Click on the button to create a new activation email.',
@@ -57,7 +57,7 @@ def account_activation(request, user_id):
 def resend_auth_mail(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     now = timezone.now()
-    user.link_time = now
+    user.activation_link_time = now
     user.save()
     url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/'
     context = {
@@ -84,29 +84,3 @@ def get_user_profile(request):
         'next': 'password_change_done',
     }
     return render(request, 'users/profile.html', context)
-
-
-def get_user_favourite(request):
-    game_list = get_games_id_list(request)
-    if game_list:
-        context = {
-            'games': game_list,
-        }
-    else:
-        context = {
-            'empty': 'There is no games here!',
-        }
-    return render(request, 'users/favourite.html', context)
-
-
-def get_games_id_list(request):
-    user = request.user
-    profile = user.userprofile
-    favourite_games = profile.games.all()
-    game_list = []
-    for item in favourite_games:
-        game_list.append(Game(item.id))
-    if game_list:
-        return game_list
-    else:
-        return None
