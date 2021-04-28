@@ -10,19 +10,13 @@
                 <div class="title-wrapper">
                     <h2 class="text-middle">Your favourite games:</h2>
                 </div>
-                {% if empty %}
-                    <div class="card my-5">
-                        <div class="card-body text-align-center">
-                            {{ empty }}
-                        </div>
-                    </div>
-                {% else %}
+                {% if games %}
                     <div class="list-group">
                         {% for game in games %}
                             <div class="flex-container-row list-group-item "
-                                 aria-current="true" >
-                            <a class="flex-container-row list-group-item list-group-item-action"
-                                 aria-current="true" href="{% url 'detail' game.id %}">
+                                 aria-current="true">
+                                <a class="flex-container-row list-group-item list-group-item-action"
+                                   aria-current="true" href="{% url 'detail' game.id %}">
 
                                     <div class="flex-container-column w-100 justify-content-between grid-col-3">
                                         <h5 class="mb-1 text-middle text-muted">{{ game.name }}</h5>
@@ -36,9 +30,15 @@
                                            href="{% url 'delete' game.id %}">delete</a>
                                     </small>
 
-                            </a>
+                                </a>
                             </div>
                         {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card my-5">
+                        <div class="card-body text-align-center">
+                            There is no games here!
+                        </div>
                     </div>
                 {% endif %}
             </div>

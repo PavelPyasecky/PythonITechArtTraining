@@ -32,7 +32,7 @@ class CustomUserCreationForm(UserCreationForm):
     @staticmethod
     def _build_activation_link(user):
         now = timezone.now()
-        user.link_time = now
+        user.activation_link_time = now
         user.save()
         url = f'{ACCOUNT_ACTIVATION_URL}{user.id}/'
         return url

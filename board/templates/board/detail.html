@@ -11,21 +11,24 @@
                         <p class="text-title">{{ game.name }}</p>
                         <p class="info-text">{{ game.genres|join:' ' }}</p>
                     </div>
-                    <div class="side-button-1-wr btn-must-wr">
-                        <label class="side-button-1 btn-must">
-                            <a class="side-b btn-must btn-font-style btn-effect"
-                                    {% if tick %}
-                               href="{% url 'delete' game.id %}">REMOVE
-                                    {% else %}
-                                        href="{% url 'add' game.id %}">MUST
-                                    {% endif %}
-                            </a>
-                            {% if tick %}
-                                <span class="badge bg-secondary">Added</span>
-                            {% endif %}
-                        </label>
-                    </div>
+                    {% if user.is_authenticated %}
+                        <div class="side-button-1-wr btn-must-wr">
+                            <label class="side-button-1 btn-must">
+                                <a class="side-b btn-must btn-font-style btn-effect"
+                                        {% if is_favourite %}
+                                   href="{% url 'delete' game.id %}">REMOVE
+                                        {% else %}
+                                            href="{% url 'add' game.id %}">MUST
+                                        {% endif %}
+                                </a>
+                                {% if is_favourite %}
+                                    <span class="badge bg-secondary">Added</span>
+                                {% endif %}
+                            </label>
+                        </div>
+                    {% endif %}
                 </div>
+                <div class="clearfix"></div>
                 <div class="text-desc-wr">
                     <span class="text-desc">Description</span>
                     <p>{{ game.full_description }}</p>
