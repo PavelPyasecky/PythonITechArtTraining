@@ -26,34 +26,9 @@ class Filter:
         self.platforms = res_platforms
 
 
-class FavouriteGame:
+class BaseGameView:
     def __init__(self, user):
         self.user = user
-        self.favourite_games = self.user.favourite_games.all()
-
-    def get_detail(self, game_id):
-        favourite_game = Favourite.objects.filter(game_id=game_id).first()
-        is_favourite = bool(favourite_game)
-        context = self._get_context(game_id, is_favourite)
-        return context
-
-    def add_to_favourite(self, game_id):
-        Favourite.objects.create(game_id=game_id, user=self.user)
-        context = self._get_context(game_id, True)
-        return context
-
-    def del_from_favourite(self, game_id, ref_page):
-        favourite_game = Favourite.objects.filter(game_id=game_id).first()
-        if favourite_game:
-            favourite_game.delete()
-
-        if 'detail' in ref_page:
-            context = self._get_context(game_id, False)
-        else:
-            context = {
-                'games': self.favourite_games,
-            }
-        return context
 
     def _get_context(self, game_id, is_favourite):
         game = Game(game_id)
@@ -72,6 +47,36 @@ class FavouriteGame:
         if tweets_id:
             return [Tweet(tweet) for tweet in tweets_id]
         return None
+
+
+class DetailView(BaseGameView):
+    def get_detail(self, game_id):
+        context = self._get_context(game_id, False)
+        return context
+
+
+class FavouriteView(BaseGameView):
+    def __init__(self, user):
+        super().__init__(user)
+        self.favourite_games = self.user.favourite_games
+
+    def add_to_favourite(self, game_id):
+        Favourite.objects.create(game_id=game_id, user=self.user)
+        context = self._get_context(game_id, True)
+        return context
+
+    def del_from_favourite(self, game_id, ref_page):
+        favourite_game = Favourite.objects.filter(game_id=game_id).first()
+        if favourite_game:
+            favourite_game.delete()
+
+        if 'detail' in ref_page:
+            context = self._get_context(game_id, False)
+        else:
+            context = {
+                'games': self.favourite_games,
+            }
+        return context
 
 
 def main(request):
@@ -117,21 +122,21 @@ def main(request):
 
 def detail(request, game_id):
     user = request.user
-    favourites = FavouriteGame(user)
+    favourites = DetailView(user)
     context = favourites.get_detail(game_id)
     return render(request, 'board/detail.html', context=context)
 
 
 def add_to_favourite(request, game_id):
     user = request.user
-    favourites = FavouriteGame(user)
+    favourites = FavouriteView(user)
     context = favourites.add_to_favourite(game_id)
     return render(request, 'board/detail.html', context=context)
 
 
 def del_from_favourite(request, game_id):
     user = request.user
-    favourites = FavouriteGame(user)
+    favourites = FavouriteView(user)
     ref_page = request.META.get('HTTP_REFERER')
     context = favourites.del_from_favourite(game_id, ref_page)
     current_site = get_current_site(request)
