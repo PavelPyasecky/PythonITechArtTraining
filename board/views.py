@@ -1,4 +1,5 @@
 import gamestore.settings as settings
+import json
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
@@ -6,6 +7,7 @@ from .logic.game import Game
 from .logic.tweet import Tweet
 from .models import Favourite
 from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse
 
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
@@ -51,7 +53,10 @@ class BaseGameView:
 
 class DetailView(BaseGameView):
     def get_detail(self, game_id):
-        context = self._get_context(game_id, False)
+        is_favourite = False
+        if self.user.is_authenticated:
+            is_favourite = bool(self.user.favourite_games.filter(game_id=game_id).first())
+        context = self._get_context(game_id, is_favourite)
         return context
 
 
@@ -122,8 +127,8 @@ def main(request):
 
 def detail(request, game_id):
     user = request.user
-    favourites = DetailView(user)
-    context = favourites.get_detail(game_id)
+    detail_game = DetailView(user)
+    context = detail_game.get_detail(game_id)
     return render(request, 'board/detail.html', context=context)
 
 
@@ -132,6 +137,24 @@ def add_to_favourite(request, game_id):
     favourites = FavouriteView(user)
     context = favourites.add_to_favourite(game_id)
     return render(request, 'board/detail.html', context=context)
+
+
+def add_to_favourite_js(request):
+    data = json.loads(request.body.decode())
+    game_id = data['game_id']
+    favourite_games = request.user.favourite_games
+    favourite_games.create(game_id=game_id, user=request.user)
+    return HttpResponse(status=200)
+
+
+def del_from_favourite_js(request):
+    data = json.loads(request.body.decode())
+    game_id = data['game_id']
+    favourite_games = request.user.favourite_games
+    favourite_game = favourite_games.filter(game_id=game_id).first()
+    if favourite_game:
+        favourite_game.delete()
+    return HttpResponse(status=200)
 
 
 def del_from_favourite(request, game_id):

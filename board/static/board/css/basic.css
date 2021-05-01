@@ -99,6 +99,9 @@
 .btn-must {
 	display: inherit;
 }
+.btn-must-added{
+	display: none;
+}
 .btn-effect:hover,
 .btn-effect:active,
 .btn-effect:focus {

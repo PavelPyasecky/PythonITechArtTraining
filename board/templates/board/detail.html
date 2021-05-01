@@ -14,17 +14,16 @@
                     {% if user.is_authenticated %}
                         <div class="side-button-1-wr btn-must-wr">
                             <label class="side-button-1 btn-must">
-                                <a class="side-b btn-must btn-font-style btn-effect"
-                                        {% if is_favourite %}
-                                   href="{% url 'delete' game.id %}">REMOVE
-                                        {% else %}
-                                            href="{% url 'add' game.id %}">MUST
-                                        {% endif %}
+                                <a class="side-b btn-must btn-font-style btn-effect" id="btn-must">
+                                    {% if is_favourite %}
+                                        REMOVE
+                                    {% else %}
+                                        MUST
+                                    {% endif %}
                                 </a>
-                                {% if is_favourite %}
-                                    <span class="badge bg-secondary">Added</span>
-                                {% endif %}
                             </label>
+                            <span class="badge bg-secondary btn-must-added" id="btn-must-added">Added</span>
+                            </button>
                         </div>
                     {% endif %}
                 </div>
@@ -104,7 +103,7 @@
                     {% if tweets %}
                         {% for tweet in tweets %}
                             <div class="card card-text card-color-tweets">
-                                <span class="text-light">{{ tweet.text }}</span>
+                                <span class="teaxt-light">{{ tweet.text }}</span>
                                 <label class="category">
                                     <span class="text-light">{{ tweet.created_at }}</span>
                                     <a class="text-link" {% if tweet.author_url %}
@@ -121,5 +120,60 @@
             </div>
         </div>
     </div>
+    <script>
+        var btnSate;
+        if ('{{ is_favourite }}' == 'True') {
+            btnSate = true;
+        } else {
+            btnSate = false;
+        }
+
+        async function gameState() {
+            var btnState = document.getElementById('btn-must').innerHTML;
+            var btnAdded = document.getElementById('btn-must-added');
+            console.log(btnState)
+            if (btnSate) {
+                btnAdded.style.display = 'inline-block';
+            } else {
+                btnAdded.style.display = 'none';
+            }
+        }
+
+        async function sendForm(url) {
+            let gama_data = {
+                game_id: {{ game.id }}
+            };
+
+            await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(gama_data)
+            });
+        }
+
+        function changeMe() {
+            btnName = document.getElementById('btn-must')
+            if (btnSate) {
+                btnName.innerHTML = 'MUST';
+                sendForm('{% url 'delete_js' %}');
+                btnSate = false;
+            } else {
+                btnName.innerHTML = 'REMOVE';
+                sendForm('{% url 'add_js' %}');
+                btnSate = true;
+            }
+        }
+
+        document.getElementById('btn-must').addEventListener('click', () => {
+            changeMe();
+            gameState();
+        });
+
+        gameState();
+
+    </script>
 {% endblock %}
 
