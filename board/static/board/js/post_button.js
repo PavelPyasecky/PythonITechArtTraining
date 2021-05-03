@@ -11,6 +11,7 @@ async function sendForm(url, game_id, method) {
         },
         body: JSON.stringify(gama_data)
     });
+    console.log('DONE!!!');
 }
 
 async function changeAddButtonState() {
@@ -45,4 +46,10 @@ function changeMustButtonState(game_id) {
         sendForm(url, game_id, 'POST');
         return  true;
     }
+}
+
+function changeDeleteBlockState(id) {
+    console.log('favourite_game_block' + String(id));
+    let btnDelete = document.getElementById('favourite_game_block' + String(id));
+        btnDelete.style.display = 'none';
 }
