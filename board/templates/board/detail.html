@@ -14,17 +14,16 @@
                     {% if user.is_authenticated %}
                         <div class="side-button-1-wr btn-must-wr">
                             <label class="side-button-1 btn-must">
-                                <a class="side-b btn-must btn-font-style btn-effect"
-                                        {% if is_favourite %}
-                                   href="{% url 'delete' game.id %}">REMOVE
-                                        {% else %}
-                                            href="{% url 'add' game.id %}">MUST
-                                        {% endif %}
+                                <a class="side-b btn-must btn-font-style btn-effect" id="btn-must">
+                                    {% if is_favourite %}
+                                        REMOVE
+                                    {% else %}
+                                        MUST
+                                    {% endif %}
                                 </a>
-                                {% if is_favourite %}
-                                    <span class="badge bg-secondary">Added</span>
-                                {% endif %}
                             </label>
+                            <span class="badge bg-secondary btn-must-added" id="btn-must-added">Added</span>
+
                         </div>
                     {% endif %}
                 </div>
@@ -104,7 +103,7 @@
                     {% if tweets %}
                         {% for tweet in tweets %}
                             <div class="card card-text card-color-tweets">
-                                <span class="text-light">{{ tweet.text }}</span>
+                                <span class="teaxt-light">{{ tweet.text }}</span>
                                 <label class="category">
                                     <span class="text-light">{{ tweet.created_at }}</span>
                                     <a class="text-link" {% if tweet.author_url %}
@@ -121,5 +120,18 @@
             </div>
         </div>
     </div>
+    <script src="{% static 'board/js/post_button.js' %}"></script>
+    <script>
+        let url = '{% url 'edit' %}';
+        let csrf_token = '{{ csrf_token }}';
+
+        document.getElementById('btn-must').addEventListener('click', () => {
+            changeMustButtonState({{ game.id }});
+            changeAddButtonState();
+        });
+
+        changeAddButtonState();
+    </script>
+
 {% endblock %}
 
