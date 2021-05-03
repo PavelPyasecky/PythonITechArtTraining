@@ -5,8 +5,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
 from .logic.game import Game
 from .logic.tweet import Tweet
-from .models import Favourite
-from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
 from django.views import View
 
@@ -69,7 +67,7 @@ class FavouriteView(View):
 
     def post(self, request, *args, **kwargs):
         self._data_init()
-        request.user.favourite_games.create(game_id=self.game_id, user=request.user)
+        request.user.favourite_games.update_or_create(game_id=self.game_id, user=request.user)
         return HttpResponse(status=200)
 
     def delete(self, request, *args, **kwargs):
