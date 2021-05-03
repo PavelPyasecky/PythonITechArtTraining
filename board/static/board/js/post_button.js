@@ -1,12 +1,3 @@
-async function gameState(btnSate) {
-    var btnAdded = document.getElementById('btn-must-added');
-    if (btnSate) {
-        btnAdded.style.display = 'inline-block';
-    } else {
-        btnAdded.style.display = 'none';
-    }
-}
-
 async function sendForm(url, game_id, method) {
     let gama_data = {
         game_id: game_id
@@ -22,15 +13,36 @@ async function sendForm(url, game_id, method) {
     });
 }
 
-function changeMe(btnSate, game_id) {
-    btnName = document.getElementById('btn-must');
-    if (btnSate) {
-        btnName.innerHTML = 'MUST';
-        sendForm(url, game_id, 'DELETE');
-        btnSate = false;
+async function changeAddButtonState() {
+    let btnMustState = getMustButtonState('btn-must');
+    let btnAdded = document.getElementById('btn-must-added');
+    if (btnMustState) {
+        btnAdded.style.display = 'inline-block';
     } else {
-        btnName.innerHTML = 'REMOVE';
+        btnAdded.style.display = 'none';
+    }
+}
+
+function getMustButtonState(){
+    let btnMustText = document.getElementById('btn-must').innerText;
+        if (btnMustText == 'REMOVE') {
+            return true;
+        } else {
+            return false;
+        }
+
+}
+
+function changeMustButtonState(game_id) {
+    let btnMustName = document.getElementById('btn-must');
+    let btnMustState = getMustButtonState();
+    if (btnMustState) {
+        btnMustName.innerText = 'MUST';
+        sendForm(url, game_id, 'DELETE');
+        return  false;
+    } else {
+        btnMustName.innerText = 'REMOVE';
         sendForm(url, game_id, 'POST');
-        btnSate = true;
+        return  true;
     }
 }

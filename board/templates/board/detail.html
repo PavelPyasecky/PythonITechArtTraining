@@ -122,22 +122,15 @@
     </div>
     <script src="{% static 'board/js/post_button.js' %}"></script>
     <script>
-        var btnSate;
-        if ('{{ is_favourite }}' == 'True') {
-            btnSate = true;
-        } else {
-            btnSate = false;
-        }
-
-        var url = '{% url 'edit' %}';
-        var csrf_token = '{{ csrf_token }}';
+        let url = '{% url 'edit' %}';
+        let csrf_token = '{{ csrf_token }}';
 
         document.getElementById('btn-must').addEventListener('click', () => {
-            changeMe(btnSate, {{ game.id }});
-            gameState(btnSate);
+            changeMustButtonState({{ game.id }});
+            changeAddButtonState();
         });
 
-        gameState(btnSate);
+        changeAddButtonState();
     </script>
 
 {% endblock %}
