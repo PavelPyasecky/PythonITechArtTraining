@@ -120,6 +120,7 @@
             </div>
         </div>
     </div>
+    <script src="{% static 'board/js/post_button.js' %}"></script>
     <script>
         var btnSate;
         if ('{{ is_favourite }}' == 'True') {
@@ -128,52 +129,16 @@
             btnSate = false;
         }
 
-        async function gameState() {
-            var btnState = document.getElementById('btn-must').innerHTML;
-            var btnAdded = document.getElementById('btn-must-added');
-            console.log(btnState)
-            if (btnSate) {
-                btnAdded.style.display = 'inline-block';
-            } else {
-                btnAdded.style.display = 'none';
-            }
-        }
-
-        async function sendForm(url) {
-            let gama_data = {
-                game_id: {{ game.id }}
-            };
-
-            await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify(gama_data)
-            });
-        }
-
-        function changeMe() {
-            btnName = document.getElementById('btn-must')
-            if (btnSate) {
-                btnName.innerHTML = 'MUST';
-                sendForm('{% url 'delete_js' %}');
-                btnSate = false;
-            } else {
-                btnName.innerHTML = 'REMOVE';
-                sendForm('{% url 'add_js' %}');
-                btnSate = true;
-            }
-        }
+        var url = '{% url 'edit' %}';
+        var csrf_token = '{{ csrf_token }}';
 
         document.getElementById('btn-must').addEventListener('click', () => {
-            changeMe();
-            gameState();
+            changeMe(btnSate, {{ game.id }});
+            gameState(btnSate);
         });
 
-        gameState();
-
+        gameState(btnSate);
     </script>
+
 {% endblock %}
 

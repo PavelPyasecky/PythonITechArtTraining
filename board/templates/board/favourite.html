@@ -26,8 +26,7 @@
                                         <p class="mb-1">{{ game.full_description|truncatewords:6 }}</p>
                                     </div>
                                     <small class="">
-                                        <a class="btn btn-danger m-4 mx-lg-2"
-                                           href="{% url 'delete' game.id %}">delete</a>
+                                        <a class="btn btn-danger m-4 mx-lg-2" id="btn-delete">delete</a>
                                     </small>
 
                                 </a>
@@ -45,4 +44,16 @@
             <div class="col-lg-4"></div>
         </div>
     </div>
+
+    <script src="{% static 'board/js/post_button.js' %}"></script>
+    <script>
+
+        var url = '{% url 'edit' %}';
+        var csrf_token = '{{ csrf_token }}';
+
+        document.getElementById('btn-delete').addEventListener('click', () => {
+            sendForm(url, game.id, 'DELETE', csrf_token);
+        });
+
+    </script>
 {% endblock %}

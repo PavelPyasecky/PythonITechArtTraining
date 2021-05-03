@@ -8,6 +8,7 @@ from .logic.tweet import Tweet
 from .models import Favourite
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
+from django.views import View
 
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
@@ -60,28 +61,23 @@ class DetailView(BaseGameView):
         return context
 
 
-class FavouriteView(BaseGameView):
-    def __init__(self, user):
-        super().__init__(user)
-        self.favourite_games = self.user.favourite_games
+class FavouriteView(View):
+    def _data_init(self):
+        data = json.loads(self.request.body.decode())
+        self.game_id = data['game_id']
+        self.favourite_games = self.request.user.favourite_games
 
-    def add_to_favourite(self, game_id):
-        Favourite.objects.create(game_id=game_id, user=self.user)
-        context = self._get_context(game_id, True)
-        return context
+    def post(self, request, *args, **kwargs):
+        self._data_init()
+        request.user.favourite_games.create(game_id=self.game_id, user=request.user)
+        return HttpResponse(status=200)
 
-    def del_from_favourite(self, game_id, ref_page):
-        favourite_game = Favourite.objects.filter(game_id=game_id).first()
+    def delete(self, request, *args, **kwargs):
+        self._data_init()
+        favourite_game = request.user.favourite_games.filter(game_id=self.game_id).first()
         if favourite_game:
             favourite_game.delete()
-
-        if 'detail' in ref_page:
-            context = self._get_context(game_id, False)
-        else:
-            context = {
-                'games': self.favourite_games,
-            }
-        return context
+        return HttpResponse(status=200)
 
 
 def main(request):
@@ -130,42 +126,6 @@ def detail(request, game_id):
     detail_game = DetailView(user)
     context = detail_game.get_detail(game_id)
     return render(request, 'board/detail.html', context=context)
-
-
-def add_to_favourite(request, game_id):
-    user = request.user
-    favourites = FavouriteView(user)
-    context = favourites.add_to_favourite(game_id)
-    return render(request, 'board/detail.html', context=context)
-
-
-def add_to_favourite_js(request):
-    data = json.loads(request.body.decode())
-    game_id = data['game_id']
-    favourite_games = request.user.favourite_games
-    favourite_games.create(game_id=game_id, user=request.user)
-    return HttpResponse(status=200)
-
-
-def del_from_favourite_js(request):
-    data = json.loads(request.body.decode())
-    game_id = data['game_id']
-    favourite_games = request.user.favourite_games
-    favourite_game = favourite_games.filter(game_id=game_id).first()
-    if favourite_game:
-        favourite_game.delete()
-    return HttpResponse(status=200)
-
-
-def del_from_favourite(request, game_id):
-    user = request.user
-    favourites = FavouriteView(user)
-    ref_page = request.META.get('HTTP_REFERER')
-    context = favourites.del_from_favourite(game_id, ref_page)
-    current_site = get_current_site(request)
-    if 'detail' in ref_page:
-        return render(request, 'board/detail.html', context=context)
-    return redirect(f'http://{current_site}/favourite/', context=context)
 
 
 def get_user_favourite(request):
