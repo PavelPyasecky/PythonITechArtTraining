@@ -81,9 +81,9 @@ class FavouriteView(View):
 def main(request):
     data = request.GET
 
-    platforms = [int(item) for item in data.getlist('platforms')]
-    genres = [int(item) for item in data.getlist('genres')]
-    rating = [int(item) for item in data.getlist('rating')]
+    platforms = [item for item in data.getlist('platforms')]
+    genres = [item for item in data.getlist('genres')]
+    rating = [item for item in data.getlist('rating')]
     res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=rating)
 
     games = []

@@ -21,7 +21,7 @@ class Game(models.Model):
 
 
 def directory_path(instance, filename):
-    return 'images/{0}/{1}'.format(instance.id, filename)
+    return 'images/{0}/{1}'.format(instance.game.id, filename)
 
 
 class Image(models.Model):
