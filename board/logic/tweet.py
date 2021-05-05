@@ -23,8 +23,6 @@ class TweetAPI:
 class Tweet:
     def __init__(self, tweet_id):
         tweet = TweetModel.objects.get(id=tweet_id)
-        if not tweet:
-            return None
         self.id = tweet['id']
         self.text = tweet['text']
         self.created_at = make_aware(datetime.datetime.fromtimestamp(tweet['created_at']))
