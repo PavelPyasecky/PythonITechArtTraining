@@ -1,8 +1,9 @@
 import gamestore.settings as settings
 from requests import get
 from django.core.management.base import BaseCommand, CommandError
-from board.models import Game, Image, Platforms, Genre
+from board.models import Game, Image, Platforms, Genre, Tweet
 from board.logic.game import GameAPI
+from board.logic.tweet import TweetAPI
 from board.api import igdbapi, twitterapi
 
 
@@ -21,6 +22,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self._base_init()
         game_ids = []
+        tweet_ids = []
         response = igdb_wrapper.get_games(platforms=options['platforms'],
                                           genres=options['genres'],
                                           rating=options['rating'])
@@ -50,11 +52,26 @@ class Command(BaseCommand):
                 for genre in genres:
                     g1.genres.add(genre)
 
+                tweet_ids = twitter_wrapper.get_tweets_by_string(game.slug)
+                if tweet_ids:
+                    for tweet_id in tweet_ids:
+                        tweet = Tweet(tweet_id)
+                        new_values = {
+                            'text': tweet.text,
+                            'created_at': tweet.created_at,
+                            'author_id': tweet.author_id,
+                            'author_name': tweet.author_name,
+                            'author_url': tweet.author_url,
+                            'game': g1,
+                        }
+                        Tweet.objects.update_or_create(id=tweet.id, defaults=new_values)
+                        tweet_ids.append(tweet.id)
                 game_ids.append(game.id)
         else:
             raise CommandError('There are no games with such parameters')
 
         self.stdout.write(self.style.SUCCESS(f'Successfully added games with id: {game_ids}'))
+        self.stdout.write(self.style.SUCCESS(f'Successfully added tweets with id: {tweet_ids}'))
 
     @staticmethod
     def _download_img(url):

@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core import management
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
-from .logic.tweet import Tweet
+from .logic.tweet import Tweet, TweetAPI
 from django.http import HttpResponse
 from django.views import View
 
@@ -33,8 +33,14 @@ class BaseGameView:
         self.user = user
 
     def _get_context(self, game_id, is_favourite):
-        game = Game(game_id)
-        tweets = self._get_tweets(game.slug)
+        if Game.is_exist(game_id):
+            game = Game(game_id)
+            tweets = Tweet.get_tweets(game_id)
+        else:
+            game = GameAPI(game_id)
+            tweet_ids = twitter_wrapper.get_tweets_by_string(game.slug)
+            tweets = [TweetAPI(tweet_id) for tweet_id in tweet_ids]
+
         context = {
             'game': game,
             'tweets': tweets,
@@ -42,13 +48,6 @@ class BaseGameView:
             'is_favourite': is_favourite
         }
         return context
-
-    @staticmethod
-    def _get_tweets(game_slug):
-        tweets_id = twitter_wrapper.get_tweets_by_string(game_slug)
-        if tweets_id:
-            return [Tweet(tweet) for tweet in tweets_id]
-        return None
 
 
 class DetailView(BaseGameView):
@@ -82,8 +81,8 @@ class FavouriteView(View):
 def main(request):
     data = request.GET
 
-    platforms = [int(item) for item in data.getlist('platforms')]
-    genres = [int(item) for item in data.getlist('genres')]
+    platforms = [item for item in data.getlist('platforms')]
+    genres = [item for item in data.getlist('genres')]
     rating = data.get('rating', default=None)
 
     if rating:

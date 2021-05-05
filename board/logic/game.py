@@ -40,7 +40,6 @@ class GameAPI:
 class Game:
     def __init__(self, game_id):
         game = GameModel.objects.get(id=game_id)
-
         self.id = game.id
         self.name = game.name
         self.slug = game.slug
@@ -69,3 +68,7 @@ class Game:
         games = GameModel.objects.filter(**params)
         game_objects = [Game(game.id) for game in games]
         return game_objects
+
+    @staticmethod
+    def is_exist(game_id):
+        return bool(GameModel.objects.filter(id=game_id).first())
