@@ -38,8 +38,8 @@
                             </div>
                             <div class="side-item">
                                 <label for="customRange3" class="form-label">User rating:</label>
-                                <input type="range" class="form-range" min="0" max="100" {% if filter_initials.rating.0 >= 0 %}
-                                       value="{{ filter_initials.rating.0 }}" {% endif %} step="10" id="customRange3"
+                                <input type="range" class="form-range" min="0" max="100" {% if filter_initials.rating >= 0 %}
+                                       value="{{ filter_initials.rating }}" {% endif %} step="10" id="customRange3"
                                        name="rating">
                             </div>
                             <hr class="dropdown-divider">

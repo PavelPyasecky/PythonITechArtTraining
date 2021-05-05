@@ -1,13 +1,14 @@
 import datetime
 import gamestore.settings as settings
 from board.api import igdbapi
+from board.models import Game as GameModel
 from django.utils.timezone import make_aware
 
 
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
 
 
-class Game:
+class GameAPI:
     def __init__(self, game_id):
         res = igdb_wrapper.get_game_by_id(game_id)
 
@@ -34,3 +35,37 @@ class Game:
         else:
             self.aggregated_rating = [None, 0]
         self.slug = res['slug']
+
+
+class Game:
+    def __init__(self, game_id):
+        game = GameModel.objects.get(id=game_id)
+
+        self.id = game.id
+        self.name = game.name
+        self.slug = game.slug
+        self.full_description = game.full_description
+        img = game.images.filter(game=game_id, is_cover=True).first()
+        if img:
+            self.img_url = img.url
+        else:
+            self.img_url = None
+        self.release = game.release
+        self.screen_url = [item.url for item in game.images.filter(game=game_id, is_cover=False)]
+        self.genres = [item.name for item in game.genres.filter(game=game_id)]
+        self.platforms = [item.name for item in game.platforms.filter(game=game_id)]
+        self.rating = [game.rating, game.rating_count]
+        self.aggregated_rating = [game.aggregated_rating, game.aggregated_rating_count]
+
+    @staticmethod
+    def get_games(platforms, genres, rating):
+        params = dict()
+        if platforms:
+            params['platforms__id__in'] = platforms
+        if genres:
+            params['genres__id__in'] = genres
+        if rating:
+            params['rating__gte'] = rating
+        games = GameModel.objects.filter(**params)
+        game_objects = [Game(game.id) for game in games]
+        return game_objects

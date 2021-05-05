@@ -2,8 +2,9 @@ import gamestore.settings as settings
 import json
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core import management
 from .api import igdbapi, twitterapi
-from .logic.game import Game
+from .logic.game import GameAPI, Game
 from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
@@ -81,15 +82,21 @@ class FavouriteView(View):
 def main(request):
     data = request.GET
 
-    platforms = [item for item in data.getlist('platforms')]
-    genres = [item for item in data.getlist('genres')]
-    rating = [item for item in data.getlist('rating')]
-    res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=rating)
+    platforms = [int(item) for item in data.getlist('platforms')]
+    genres = [int(item) for item in data.getlist('genres')]
+    rating = data.get('rating', default=None)
 
-    games = []
-    if res:
-        for game in res:
-            games.append(Game(game['id']))
+    if rating:
+        rating = int(rating)
+    games = Game.get_games(platforms=platforms, genres=genres, rating=rating)
+
+    if not games:
+        res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=[rating,])
+        games = []
+        if res:
+            # management.call_command('getdatafromapi', platforms=platforms, genres=genres, rating=[rating,]) # CELERY
+            for game in res:
+                games.append(GameAPI(game['id']))
 
     paginator = Paginator(games, 8)    # object_list
     page_number = data.get('page')

@@ -2,7 +2,7 @@ import gamestore.settings as settings
 from requests import get
 from django.core.management.base import BaseCommand, CommandError
 from board.models import Game, Image, Platforms, Genre
-from board.logic.game import Game as GameAPI
+from board.logic.game import GameAPI
 from board.api import igdbapi, twitterapi
 
 
