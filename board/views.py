@@ -2,7 +2,7 @@ import gamestore.settings as settings
 import json
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core import management
+from board.tasks import update_or_download_game
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
 from .logic.tweet import Tweet, TweetAPI
@@ -91,13 +91,16 @@ def main(request):
     if rating:
         rating = int(rating)
     games = Game.get_games(platforms=platforms, genres=genres, rating=rating)
-
+    if games:
+        print('Games are here, in DB!!!')
     if not games:
+        print('There are no games in DB!')
+        print(platforms, genres, rating)
         res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=[rating,])
         games = []
         if res:
-            # management.call_command('getdatafromapi', platforms=platforms, genres=genres, rating=[rating,]) # CELERY
             for game in res:
+                update_or_download_game.delay(game['id'])
                 games.append(GameAPI(game['id']))
 
     paginator = Paginator(games, 8)    # object_list

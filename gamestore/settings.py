@@ -159,3 +159,18 @@ ACCOUNT_ACTIVATION_URL = 'http://localhost:8000/users/activate/'  # Production -
 
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# Celery settings
+
+CELERY_BROKER_URL = 'pyamqp://'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'rpc://'
+CELERY_TASK_SERIALIZER = 'json'
+
+# Celery Configuration Options
+
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
