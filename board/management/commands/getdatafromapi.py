@@ -21,8 +21,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self._base_init()
-        game_ids = []
-        tweet_ids = []
+        game_ids_log = []
+        tweet_ids_log = []
         response = igdb_wrapper.get_games(platforms=options['platforms'],
                                           genres=options['genres'],
                                           rating=options['rating'])
@@ -53,9 +53,10 @@ class Command(BaseCommand):
                     g1.genres.add(genre)
 
                 tweet_ids = twitter_wrapper.get_tweets_by_string(game.slug)
+                print('tweet_ids:', tweet_ids)
                 if tweet_ids:
                     for tweet_id in tweet_ids:
-                        tweet = Tweet(tweet_id)
+                        tweet = TweetAPI(tweet_id)
                         new_values = {
                             'text': tweet.text,
                             'created_at': tweet.created_at,
@@ -65,13 +66,15 @@ class Command(BaseCommand):
                             'game': g1,
                         }
                         Tweet.objects.update_or_create(id=tweet.id, defaults=new_values)
-                        tweet_ids.append(tweet.id)
-                game_ids.append(game.id)
+                        print('Tweet_id ->', tweet.id)
+                        tweet_ids_log.append(tweet.id)
+                    print('Game_id ->', game.id)
+                game_ids_log.append(game.id)
         else:
             raise CommandError('There are no games with such parameters')
 
-        self.stdout.write(self.style.SUCCESS(f'Successfully added games with id: {game_ids}'))
-        self.stdout.write(self.style.SUCCESS(f'Successfully added tweets with id: {tweet_ids}'))
+        self.stdout.write(self.style.SUCCESS(f'Successfully added games with id: {game_ids_log}'))
+        self.stdout.write(self.style.SUCCESS(f'Successfully added tweets with id: {tweet_ids_log}'))
 
     @staticmethod
     def _download_img(url):

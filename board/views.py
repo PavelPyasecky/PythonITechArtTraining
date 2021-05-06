@@ -39,7 +39,10 @@ class BaseGameView:
         else:
             game = GameAPI(game_id)
             tweet_ids = twitter_wrapper.get_tweets_by_string(game.slug)
-            tweets = [TweetAPI(tweet_id) for tweet_id in tweet_ids]
+            if tweet_ids:
+                tweets = [TweetAPI(tweet_id) for tweet_id in tweet_ids]
+            else:
+                tweets = None
 
         context = {
             'game': game,
