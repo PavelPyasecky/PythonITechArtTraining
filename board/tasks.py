@@ -1,4 +1,5 @@
 from celery import shared_task
+from gamestore.celery import app
 from django.core import management
 from board.models import Favourite
 
@@ -19,3 +20,8 @@ def update_favourites(slice=None):
     for game in favourites:
         management.call_command('getgamefromapi', id=game.id)
         management.call_command('gettweetsfromapi', id=game.id)
+
+
+# @app.on_after_configure.connect
+# def setup_periodic_tasks(sender, **kwargs):
+#     sender.add_periodic_task(5.0, update_favourites.s(), name='add every 10m')

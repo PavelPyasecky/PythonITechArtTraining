@@ -16,13 +16,6 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
-#
-# @app.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     from board.tasks import update_favourites
-#     # Calls test('hello') every 10 minutes.
-#     sender.add_periodic_task(1*60.0, update_favourites.s(), name='add every 10m')
-#
 
 @app.task(bind=True)
 def debug_task(self):

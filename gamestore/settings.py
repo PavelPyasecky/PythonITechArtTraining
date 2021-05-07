@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from kombu import Exchange, Queue
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -174,3 +175,12 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_QUEUES = (
+    Queue('default', Exchange('default'), routing_key='default'),
+    Queue('setup_periodic_tasks', Exchange('favourites'), routing_key='favourites', queue_arguments={'x-max-priority': 10}),
+)
+
+CELERY_ROUTES = {
+    'my_taskA': {'queue': 'favourites', 'routing_key': 'update_favourites'},
+}

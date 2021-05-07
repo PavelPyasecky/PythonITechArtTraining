@@ -8,7 +8,7 @@ from .logic.game import GameAPI, Game
 from .logic.tweet import Tweet, TweetAPI
 from django.http import HttpResponse
 from django.views import View
-
+from .models import Game as GameModel
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
@@ -83,7 +83,6 @@ class FavouriteView(View):
 
 def main(request):
     data = request.GET
-
     platforms = [item for item in data.getlist('platforms')]
     genres = [item for item in data.getlist('genres')]
     rating = data.get('rating', default=None)
