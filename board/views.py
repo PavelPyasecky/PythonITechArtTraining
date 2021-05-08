@@ -87,50 +87,48 @@ class GetFavouriteView(View):
         return render(request, 'board/favourite.html', context)
 
 
-def main(request):
-    data = request.GET
-    platforms = [item for item in data.getlist('platforms')]
-    genres = [item for item in data.getlist('genres')]
-    rating = data.get('rating', default=None)
+class MainView(View):
+    def _data_init(self):
+        data = self.request.GET
+        self.platforms = [item for item in data.getlist('platforms')]
+        self.genres = [item for item in data.getlist('genres')]
+        self.rating = data.get('rating', default=50)
 
-    if rating:
-        rating = int(rating)
-    games = Game.get_games(platforms=platforms, genres=genres, rating=rating)
-    if games:
-        print('Games are here, in DB!!!')
-    if not games:
-        print('There are no games in DB!')
-        print(platforms, genres, rating)
-        res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=[rating,])
-        games = []
-        if res:
-            for game in res:
-                update_or_download_game.delay(game['id'])
-                games.append(GameAPI(game['id']))
+    def get(self, request):
+        self._data_init()
+        games = Game.get_games(platforms=self.platforms, genres=self.genres, rating=int(self.rating))
 
-    paginator = Paginator(games, 8)    # object_list
-    page_number = data.get('page')
-    try:
-        page_obj = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        # Set first page
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        # Set last page, if the counter is bigger then max_page
-        page_obj = paginator.page(paginator.num_pages)
+        if not games:
+            response = igdb_wrapper.get_games(platforms=self.platforms, genres=self.genres, rating=[self.rating,])
+            games = []
+            if response:
+                for game in response:
+                    update_or_download_game.delay(game['id'])
+                    games.append(GameAPI(game['id']))
 
-    filter_panel = Filter()
-    filter_initials = {
-        'platforms': platforms,
-        'genres': genres,
-        'rating': rating
-    }
-    context = {
-        'games': games,
-        'filter_panel': filter_panel,
-        'filter_initials': filter_initials,
-        'page_obj': page_obj,
-        'page_numbers': paginator.page_range,
-        'user': request.user
-    }
-    return render(request, 'board/main.html', context=context)
+        paginator = Paginator(games, 8)    # object_list
+        page_number = request.GET.get('page')
+        try:
+            page_obj = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            # Set first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # Set last page, if the counter is bigger then max_page
+            page_obj = paginator.page(paginator.num_pages)
+
+        filter_panel = Filter()
+        filter_initials = {
+            'platforms': self.platforms,
+            'genres': self.genres,
+            'rating': self.rating
+        }
+        context = {
+            'games': games,
+            'filter_panel': filter_panel,
+            'filter_initials': filter_initials,
+            'page_obj': page_obj,
+            'page_numbers': paginator.page_range,
+            'user': request.user
+        }
+        return render(request, 'board/main.html', context=context)
