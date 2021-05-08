@@ -3,6 +3,7 @@ import json
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
+from .tasks import update_or_download_game
 from .logic.game import GameAPI, Game
 from .models import Favourite
 from .logic.tweet import Tweet
@@ -93,6 +94,14 @@ class MainView(View):
     def get(self, request):
         self._data_init()
         games = Game.get_games(platforms=self.platforms, genres=self.genres, rating=int(self.rating))
+
+        if not games:
+            res = igdb_wrapper.get_games(platforms=self.platforms, genres=self.genres, rating=[self.rating, ])
+            games = []
+            if res:
+                for game in res:
+                    update_or_download_game.delay(game['id'])
+                    games.append(GameAPI(game['id']))
 
         paginator = Paginator(games, 8)    # object_list
         page_number = request.GET.get('page')
