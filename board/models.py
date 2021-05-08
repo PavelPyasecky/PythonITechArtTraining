@@ -42,13 +42,3 @@ class Platforms(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=150, unique=True)
     game = models.ManyToManyField(Game, related_name='platforms')
-
-
-class Tweet(models.Model):
-    id = models.BigIntegerField(primary_key=True)
-    text = models.TextField()
-    created_at = models.DateTimeField(null=True)
-    author_id = models.BigIntegerField(null=True)
-    author_name = models.CharField(max_length=150)
-    author_url = models.CharField(max_length=150)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='tweets')
