@@ -20,10 +20,6 @@ class Game(models.Model):
     aggregated_rating_count = models.IntegerField(null=True)
 
 
-def directory_path(instance, filename):
-    return 'images/{0}/{1}'.format(instance.game.id, filename)
-
-
 class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     url = models.CharField(max_length=150, unique=True)

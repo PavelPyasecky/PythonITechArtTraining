@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='image',
             name='upload',
-            field=models.FileField(blank=True, upload_to=board.models.directory_path),
+            field=models.FileField(blank=True),
         ),
         migrations.RemoveField(
             model_name='platforms',
