@@ -11,7 +11,6 @@ async function sendForm(url, game_id, method) {
         },
         body: JSON.stringify(gama_data)
     });
-    console.log('DONE!!!');
 }
 
 async function changeAddButtonState() {

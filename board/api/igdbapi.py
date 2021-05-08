@@ -22,7 +22,8 @@ class IgdbWrapper(BaseWrapper):
                       'rating, rating_count, slug ',
             'filter[id][eq]': game_id
         }
-        return self._post('games', query)[0]
+        response = self._post('games', query)
+        return response[0] if response else None
 
     def get_games(self, platforms, genres, rating):
         query = {
