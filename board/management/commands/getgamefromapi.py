@@ -19,9 +19,9 @@ class Command(BaseCommand):
         self._base_init()
         game_id = options['id']
 
-        response = igdb_wrapper.get_game_by_id(game_id)
-        if response:
-            game = GameAPI(response['id'])
+        game = GameAPI(game_id)
+        if game.is_empty():
+            game = GameAPI(game_id)
             new_values = {
                 'name': game.name,
                 'slug': game.slug,
@@ -46,7 +46,7 @@ class Command(BaseCommand):
                 g1.genres.add(genre)
 
         else:
-            raise CommandError('There are no game with such parameters')
+            raise CommandError('There is no game with such parameters')
 
         self.stdout.write(self.style.SUCCESS(f'Successfully added game with id: {game_id}'))
 
