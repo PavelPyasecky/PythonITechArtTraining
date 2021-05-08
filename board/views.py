@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from board.tasks import update_or_download_game
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
-from .logic.tweet import Tweet, TweetAPI
+from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
 from .models import Game as GameModel
@@ -35,14 +35,14 @@ class BaseGameView:
     def _get_context(self, game_id, is_favourite):
         if Game.is_exist(game_id):
             game = Game(game_id)
-            tweets = Tweet.get_tweets(game_id)
         else:
             game = GameAPI(game_id)
-            tweet_ids = twitter_wrapper.get_tweets_by_string(game.slug)
-            if tweet_ids:
-                tweets = [TweetAPI(tweet_id) for tweet_id in tweet_ids]
-            else:
-                tweets = None
+
+        tweet_ids = twitter_wrapper.get_tweets_by_string(game.slug)
+        if tweet_ids:
+            tweets = [Tweet(tweet_id) for tweet_id in tweet_ids]
+        else:
+            tweets = None
 
         context = {
             'game': game,
