@@ -57,6 +57,6 @@ class Command(BaseCommand):
         platforms = Platform.objects.all()
         genres = Genre.objects.all()
         if platforms.count() != len(platforms_api):
-            [Platforms.objects.create(id=item['id'], name=item['name']) for item in platforms]
+            [Platform.objects.create(id=item['id'], name=item['name']) for item in platforms]
         if genres.count() != len(genres_api):
             [Genre.objects.create(id=item['id'], name=item['name']) for item in genres]
