@@ -40,10 +40,8 @@ class Command(BaseCommand):
 
             platforms = Platforms.objects.filter(name__in=game.platforms)
             genres = Genre.objects.filter(name__in=game.genres)
-            for platform in platforms:
-                g1.platforms.add(platform)
-            for genre in genres:
-                g1.genres.add(genre)
+            g1.platforms.add(*platforms)
+            g1.genres.add(*genres)
 
         else:
             raise CommandError('There is no game with such parameters')
@@ -51,20 +49,14 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f'Successfully added game with id: {game_id}'))
 
     @staticmethod
-    def _download_img(url):
-        response = get(url)
-        response.raise_for_status()
-        return response.content
-
-    @staticmethod
     def _base_init():
+        params = {'fields': 'name'}
+        platforms_api = igdb_wrapper.get_platforms(params)
+        genres_api = igdb_wrapper.get_genres(params)
+
         platforms = Platforms.objects.all()
-        if platforms:
-            return None
-        params = {
-            'fields': 'name'
-        }
-        platforms = igdb_wrapper.get_platforms(params)
-        genres = igdb_wrapper.get_genres(params)
-        [Platforms.objects.create(id=item['id'], name=item['name']) for item in platforms]
-        [Genre.objects.create(id=item['id'], name=item['name']) for item in genres]
+        genres = Genre.objects.all()
+        if platforms.count() != len(platforms_api):
+            [Platforms.objects.create(id=item['id'], name=item['name']) for item in platforms]
+        if genres.count() != len(genres_api):
+            [Genre.objects.create(id=item['id'], name=item['name']) for item in genres]
