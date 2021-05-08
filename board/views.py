@@ -5,6 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from board.tasks import update_or_download_game
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
+from .models import Favourite
 from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
@@ -33,7 +34,7 @@ class GameDetailView(View):
         game = self._get_game(game_id)
         tweets = self._get_tweets(game.slug)
 
-        is_favourite = self.request.user.favourite_games.filter(game_id=self.kwargs['game_id']).exists()
+        is_favourite = Favourite.objects.filter(game_id=self.kwargs['game_id']).exists()
         context = {
             'game': game,
             'tweets': tweets,
