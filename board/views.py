@@ -95,14 +95,6 @@ class MainView(View):
         self._data_init()
         games = Game.get_games(platforms=self.platforms, genres=self.genres, rating=int(self.rating))
 
-        if not games:
-            response = igdb_wrapper.get_games(platforms=self.platforms, genres=self.genres, rating=[self.rating,])
-            games = []
-            if response:
-                for game in response:
-                    update_or_download_game.delay(game['id'])
-                    games.append(GameAPI(game['id']))
-
         paginator = Paginator(games, 8)    # object_list
         page_number = request.GET.get('page')
         try:
