@@ -121,7 +121,7 @@ class MainView(View):
         filter_initials = {
             'platforms': self.platforms,
             'genres': self.genres,
-            'rating': self.rating
+            'rating': int(self.rating)
         }
         context = {
             'games': games,
