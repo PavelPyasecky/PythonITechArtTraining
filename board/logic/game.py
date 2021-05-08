@@ -71,4 +71,4 @@ class Game:
 
     @staticmethod
     def is_exist(game_id):
-        return bool(GameModel.objects.filter(id=game_id).first())
+        return GameModel.objects.filter(id=game_id).exists()
