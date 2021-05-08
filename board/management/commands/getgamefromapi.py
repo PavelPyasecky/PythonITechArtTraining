@@ -1,7 +1,7 @@
 import gamestore.settings as settings
 from requests import get
 from django.core.management.base import BaseCommand, CommandError
-from board.models import Game, Image, Platforms, Genre
+from board.models import Game, Image, Platform, Genre
 from board.logic.game import GameAPI
 from board.api import igdbapi
 
@@ -38,7 +38,7 @@ class Command(BaseCommand):
             for i in range(len(game.screen_url)):
                 Image.objects.update_or_create(url=game.screen_url[i], defaults={'game': g1})
 
-            platforms = Platforms.objects.filter(name__in=game.platforms)
+            platforms = Platform.objects.filter(name__in=game.platforms)
             genres = Genre.objects.filter(name__in=game.genres)
             g1.platforms.add(*platforms)
             g1.genres.add(*genres)
@@ -54,7 +54,7 @@ class Command(BaseCommand):
         platforms_api = igdb_wrapper.get_platforms(params)
         genres_api = igdb_wrapper.get_genres(params)
 
-        platforms = Platforms.objects.all()
+        platforms = Platform.objects.all()
         genres = Genre.objects.all()
         if platforms.count() != len(platforms_api):
             [Platforms.objects.create(id=item['id'], name=item['name']) for item in platforms]

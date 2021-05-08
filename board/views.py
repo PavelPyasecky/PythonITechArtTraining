@@ -52,11 +52,7 @@ class GameDetailView(View):
     @staticmethod
     def _get_tweets(game_slug):
         tweet_ids = twitter_wrapper.get_tweets_by_string(game_slug)
-        if tweet_ids:
-            tweets = [Tweet(tweet_id) for tweet_id in tweet_ids]
-        else:
-            tweets = None
-        return tweets
+        return [Tweet(tweet_id) for tweet_id in tweet_ids]
 
 
 class FavouriteView(View):
