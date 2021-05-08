@@ -2,7 +2,6 @@ import gamestore.settings as settings
 import json
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from board.tasks import update_or_download_game
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
 from .models import Favourite
@@ -29,7 +28,7 @@ class Filter:
         self.platforms = res_platforms
 
 
-class GameDetailView(View):
+class DetailView(View):
     def get(self, request, game_id):
         game = self._get_game(game_id)
         tweets = self._get_tweets(game.slug)
