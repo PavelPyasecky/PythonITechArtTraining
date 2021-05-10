@@ -3,4 +3,4 @@ requests==2.25.1
 psycopg2-binary==2.8.6
 Pillow==8.2.0
 celery==5.0.5
-rabbitmq-server==3.6.10
+amqp==5.0.6
