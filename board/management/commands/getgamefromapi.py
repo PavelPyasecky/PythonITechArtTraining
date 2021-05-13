@@ -19,29 +19,28 @@ class Command(BaseCommand):
         self._base_init()
         game_id = options['id']
 
-        game = GameAPI(game_id)
-        if game.is_empty():
-            game = GameAPI(game_id)
+        game_api_response_object = GameAPI(game_id)
+        if game_api_response_object.is_empty():
             new_values = {
-                'name': game.name,
-                'slug': game.slug,
-                'full_description': game.full_description,
-                'release': game.release,
-                'rating': game.rating[0],
-                'rating_count': game.rating[1],
-                'aggregated_rating': game.aggregated_rating[0],
-                'aggregated_rating_count': game.aggregated_rating[1],
+                'name': game_api_response_object.name,
+                'slug': game_api_response_object.slug,
+                'full_description': game_api_response_object.full_description,
+                'release': game_api_response_object.release,
+                'rating': game_api_response_object.rating[0],
+                'rating_count': game_api_response_object.rating[1],
+                'aggregated_rating': game_api_response_object.aggregated_rating[0],
+                'aggregated_rating_count': game_api_response_object.aggregated_rating[1],
             }
-            g1, created = Game.objects.update_or_create(id=game.id, defaults=new_values)
+            game, created = Game.objects.update_or_create(id=game_api_response_object.id, defaults=new_values)
 
-            Image.objects.update_or_create(url=game.img_url, defaults={'is_cover': True, 'game': g1})
+            Image.objects.update_or_create(url=game.img_url, defaults={'is_cover': True, 'game': game})
             for i in range(len(game.screen_url)):
-                Image.objects.update_or_create(url=game.screen_url[i], defaults={'game': g1})
+                Image.objects.update_or_create(url=game.screen_url[i], defaults={'game': game})
 
             platforms = Platform.objects.filter(name__in=game.platforms)
             genres = Genre.objects.filter(name__in=game.genres)
-            g1.platforms.add(*platforms)
-            g1.genres.add(*genres)
+            game.platforms.add(*platforms)
+            game.genres.add(*genres)
 
         else:
             raise CommandError('There is no game with such parameters')
