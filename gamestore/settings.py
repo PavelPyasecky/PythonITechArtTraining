@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'board',
+    'django_celery_results',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -175,12 +176,3 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-
-CELERY_QUEUES = (
-    Queue('default', Exchange('default'), routing_key='default'),
-    Queue('setup_periodic_tasks', Exchange('favourites'), routing_key='favourites', queue_arguments={'x-max-priority': 10}),
-)
-
-CELERY_ROUTES = {
-    'my_taskA': {'queue': 'favourites', 'routing_key': 'update_favourites'},
-}
