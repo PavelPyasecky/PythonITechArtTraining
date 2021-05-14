@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
-from .models import Favourite
+from users.models import CustomUser
 from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
@@ -32,8 +32,12 @@ class DetailView(View):
     def get(self, request, game_id):
         game = self._get_game(game_id)
         tweets = self._get_tweets(game.slug)
+        user = request.user
 
-        is_favourite = Favourite.objects.filter(game_id=self.kwargs['game_id']).exists()
+        if user.is_authenticated:
+            is_favourite = user.favourite_games.filter(game_id=self.kwargs['game_id']).exists()
+        else:
+            is_favourite = None
         context = {
             'game': game,
             'tweets': tweets,

@@ -23,7 +23,6 @@ class Game(models.Model):
 class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     url = models.CharField(max_length=150, unique=True)
-
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='images')
     is_cover = models.BooleanField(default=False)
 
