@@ -33,12 +33,12 @@ class Command(BaseCommand):
             }
             game, created = Game.objects.update_or_create(id=game_api_response_object.id, defaults=new_values)
 
-            Image.objects.update_or_create(url=game.img_url, defaults={'is_cover': True, 'game': game})
-            for i in range(len(game.screen_url)):
-                Image.objects.update_or_create(url=game.screen_url[i], defaults={'game': game})
+            Image.objects.update_or_create(url=game_api_response_object.img_url, defaults={'is_cover': True, 'game': game})
+            for i in range(len(game_api_response_object.screen_url)):
+                Image.objects.update_or_create(url=game_api_response_object.screen_url[i], defaults={'game': game})
 
-            platforms = Platform.objects.filter(name__in=game.platforms)
-            genres = Genre.objects.filter(name__in=game.genres)
+            platforms = Platform.objects.filter(name__in=game_api_response_object.platforms)
+            genres = Genre.objects.filter(name__in=game_api_response_object.genres)
             game.platforms.add(*platforms)
             game.genres.add(*genres)
 
@@ -55,7 +55,11 @@ class Command(BaseCommand):
 
         platforms = Platform.objects.all()
         genres = Genre.objects.all()
-        if platforms.count() != len(platforms_api):
-            [Platform.objects.create(id=item['id'], name=item['name']) for item in platforms]
-        if genres.count() != len(genres_api):
-            [Genre.objects.create(id=item['id'], name=item['name']) for item in genres]
+
+        for item in platforms_api:
+            if item['id'] not in [platform for platform in platforms]:
+                Platform.objects.update_or_create(id=item['id'], name=item['name'])
+
+        for item in genres_api:
+            if item['id'] not in [genre for genre in genres]:
+                Genre.objects.update_or_create(id=item['id'], name=item['name'])
