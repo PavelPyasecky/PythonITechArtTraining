@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
+from kombu import Exchange, Queue
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'board',
+    'django_celery_results',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -128,6 +130,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # IGDB API keys
 
@@ -156,3 +161,18 @@ ACCOUNT_ACTIVATION_URL = 'http://localhost:8000/users/activate/'  # Production -
 
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# Celery settings
+
+CELERY_BROKER_URL = 'pyamqp://'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'rpc://'
+CELERY_TASK_SERIALIZER = 'json'
+
+# Celery Configuration Options
+
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60

@@ -8,7 +8,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 from .forms import CustomUserCreationForm
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
-from board.logic.game import Game
 
 
 class SignUpView(generic.CreateView):

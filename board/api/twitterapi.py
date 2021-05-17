@@ -24,7 +24,7 @@ class TwitterWrapper(BaseWrapper):
         if tweet_list:
             return [item['id'] for item in tweet_list]
         else:
-            return tweet_list
+            return []
 
     def get_user_by_id(self, user_id):
         query = {

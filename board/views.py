@@ -1,9 +1,10 @@
 import gamestore.settings as settings
 import json
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
-from .logic.game import Game
+from .logic.game import GameAPI, Game
+from users.models import CustomUser
 from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
@@ -27,36 +28,35 @@ class Filter:
         self.platforms = res_platforms
 
 
-class BaseGameView:
-    def __init__(self, user):
-        self.user = user
-
-    def _get_context(self, game_id, is_favourite):
-        game = Game(game_id)
+class DetailView(View):
+    def get(self, request, game_id):
+        game = self._get_game(game_id)
         tweets = self._get_tweets(game.slug)
+        user = request.user
+
+        if user.is_authenticated:
+            is_favourite = user.favourite_games.filter(game_id=self.kwargs['game_id']).exists()
+        else:
+            is_favourite = None
         context = {
             'game': game,
             'tweets': tweets,
-            'user': self.user,
-            'is_favourite': is_favourite
+            'is_favourite': is_favourite,
         }
-        return context
+        return render(request, 'board/detail.html', context=context)
+
+    @staticmethod
+    def _get_game(game_id):
+        if Game.is_exist(game_id):
+            game = Game(game_id)
+        else:
+            game = GameAPI(game_id)
+        return game
 
     @staticmethod
     def _get_tweets(game_slug):
-        tweets_id = twitter_wrapper.get_tweets_by_string(game_slug)
-        if tweets_id:
-            return [Tweet(tweet) for tweet in tweets_id]
-        return None
-
-
-class DetailView(BaseGameView):
-    def get_detail(self, game_id):
-        is_favourite = False
-        if self.user.is_authenticated:
-            is_favourite = bool(self.user.favourite_games.filter(game_id=game_id).first())
-        context = self._get_context(game_id, is_favourite)
-        return context
+        tweet_ids = twitter_wrapper.get_tweets_by_string(game_slug)
+        return [Tweet(tweet_id) for tweet_id in tweet_ids]
 
 
 class FavouriteView(View):
@@ -78,57 +78,49 @@ class FavouriteView(View):
         return HttpResponse(status=200)
 
 
-def main(request):
-    data = request.GET
-
-    platforms = [int(item) for item in data.getlist('platforms')]
-    genres = [int(item) for item in data.getlist('genres')]
-    rating = [int(item) for item in data.getlist('rating')]
-    res = igdb_wrapper.get_games(platforms=platforms, genres=genres, rating=rating)
-
-    games = []
-    if res:
-        for game in res:
-            games.append(Game(game['id']))
-
-    paginator = Paginator(games, 8)    # object_list
-    page_number = data.get('page')
-    try:
-        page_obj = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        # Set first page
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        # Set last page, if the counter is bigger then max_page
-        page_obj = paginator.page(paginator.num_pages)
-
-    filter_panel = Filter()
-    filter_initials = {
-        'platforms': platforms,
-        'genres': genres,
-        'rating': rating
-    }
-    context = {
-        'games': games,
-        'filter_panel': filter_panel,
-        'filter_initials': filter_initials,
-        'page_obj': page_obj,
-        'page_numbers': paginator.page_range,
-        'user': request.user
-    }
-    return render(request, 'board/main.html', context=context)
+class GetFavouriteView(View):
+    def get(self, request):
+        game_list = [Game(item.game_id) for item in request.user.favourite_games.all()]
+        context = {
+            'games': game_list,
+        }
+        return render(request, 'board/favourite.html', context)
 
 
-def detail(request, game_id):
-    user = request.user
-    detail_game = DetailView(user)
-    context = detail_game.get_detail(game_id)
-    return render(request, 'board/detail.html', context=context)
+class MainView(View):
+    def _data_init(self):
+        data = self.request.GET
+        self.platforms = [item for item in data.getlist('platforms')]
+        self.genres = [item for item in data.getlist('genres')]
+        self.rating = data.get('rating', default=50)
 
+    def get(self, request):
+        self._data_init()
+        games = Game.get_games(platforms=self.platforms, genres=self.genres, rating=int(self.rating))
 
-def get_user_favourite(request):
-    game_list = [Game(item.game_id) for item in request.user.favourite_games.all()]
-    context = {
-        'games': game_list,
-    }
-    return render(request, 'board/favourite.html', context)
+        paginator = Paginator(games, 8)    # object_list
+        page_number = request.GET.get('page')
+        try:
+            page_obj = paginator.get_page(page_number)
+        except PageNotAnInteger:
+            # Set first page
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            # Set last page, if the counter is bigger then max_page
+            page_obj = paginator.page(paginator.num_pages)
+
+        filter_panel = Filter()
+        filter_initials = {
+            'platforms': self.platforms,
+            'genres': self.genres,
+            'rating': int(self.rating)
+        }
+        context = {
+            'games': games,
+            'filter_panel': filter_panel,
+            'filter_initials': filter_initials,
+            'page_obj': page_obj,
+            'page_numbers': paginator.page_range,
+            'user': request.user
+        }
+        return render(request, 'board/main.html', context=context)
