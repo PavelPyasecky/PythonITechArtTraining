@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .api import igdbapi, twitterapi
 from .logic.game import GameAPI, Game
-from users.models import CustomUser
 from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
