@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from board.models import Game
-from board import relations
+from restapi import relations
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):

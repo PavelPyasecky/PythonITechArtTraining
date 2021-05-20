@@ -1,7 +1,7 @@
 from board.models import Game
 from rest_framework import viewsets
 from rest_framework import permissions
-from board.serializers import GameSerializer
+from restapi.serializers import GameSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -17,8 +17,8 @@ class GameItemView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, game_id=None):
-        if not game_id:
-            return Response({'error': 'There is no game with such id!'})
         game = Game.objects.filter(id=game_id).first()
+        if not game:
+            return Response({'error': 'There is no game with such id!'})
         serializer = GameSerializer(game)
         return Response(serializer.data)
