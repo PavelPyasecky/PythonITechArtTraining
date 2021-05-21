@@ -1,24 +1,34 @@
-from board.models import Game
+from board.models import Game, Genre, Platform
 from rest_framework import viewsets
 from rest_framework import permissions
-from restapi.serializers import GameSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from restapi.permissions import IsStaffOrReadOnly
+from restapi import serializers
 
 
 class GameViewSet(viewsets.ModelViewSet):
-    queryset = Game.objects.all().order_by('-rating')[:3]
-    serializer_class = GameSerializer
+    """
+    This viewset automatically provides `list`, `create`, `retrieve`,
+    `update` and `destroy` actions.
+    """
+    queryset = Game.objects.all().order_by('-rating')
+    serializer_class = serializers.GameSerializer
+    permission_classes = [permissions.IsAuthenticated,
+                          IsStaffOrReadOnly]
+
+
+class GenreViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `retrieve` actions.
+    """
+    queryset = Genre.objects.all()
+    serializer_class = serializers.GenreSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
-class GameItemView(APIView):
-    queryset = Game.objects.all()
+class PlatformViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides `list` and `retrieve` actions.
+    """
+    queryset = Platform.objects.all()
+    serializer_class = serializers.PlatformSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, game_id=None):
-        game = Game.objects.filter(id=game_id).first()
-        if not game:
-            return Response({'error': 'There is no game with such id!'})
-        serializer = GameSerializer(game)
-        return Response(serializer.data)

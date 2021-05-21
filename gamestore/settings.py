@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'board',
     'django_celery_results',
     'rest_framework',
+    'restapi'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
