@@ -1,36 +1,27 @@
+{% load get_page_url %}
+
 <div class="container-fluid">
         <ul class="pagination">
         {% if page_obj.has_previous %}
             <li class="page-item">
-                <button class="page-link" onclick="myFunction({{ page_obj.previous_page_number }})" aria-label="Previous">
+                <a class="page-link" href="{{ page_obj.previous_page_number|get_page_url:filter_initials}}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
-                </button>
+                </a>
             </li>
         {% endif %}
-            {% for item in page_numbers %}
-                {% if item == page_obj.number %}
-                <li class="page-item"><a class="page-link active">{{ item }}</a></li>
+            {% for page_number in page_numbers %}
+                {% if page_number == page_obj.number %}
+                <li class="page-item"><a class="page-link active">{{ page_number }}</a></li>
                 {% else %}
-                <li class="page-item"><button class="page-link" onclick="myFunction({{ item }})">{{ item }}</button></li>
+                <li class="page-item"><a class="page-link" href="{{ page_number|get_page_url:filter_initials}}">{{ page_number }}</a></li>
                 {% endif %}
             {% endfor %}
         {% if page_obj.has_next %}
             <li class="page-item">
-                <button class="page-link" onclick="myFunction({{ page_obj.next_page_number }})" aria-label="Next">
+                <a class="page-link" href="{{ page_obj.next_page_number|get_page_url:filter_initials}}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
-                </button>
+                </a>
             </li>
         {% endif %}
         </ul>
 </div>
-
-<script>
-    function myFunction(page_number) {
-        let form = document.getElementById('filter-form')    {# The element with id=filter-form is located in main.html #}
-        let newField = document.createElement("INPUT");
-        newField.setAttribute("name", "page");
-        newField.setAttribute("value", page_number);
-        form.append(newField)
-        form.submit();
-    }
-</script>
