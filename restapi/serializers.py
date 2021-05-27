@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from board.models import Game, Genre, Platform
+from users.models import CustomUser as User
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,3 +30,10 @@ class PlatformSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Platform
         fields = ['id', 'name', 'game']
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'birthday', 'is_staff', 'last_login']

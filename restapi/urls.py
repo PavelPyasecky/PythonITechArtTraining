@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 router.register(r'games', views.GameViewSet)
 router.register(r'genres', views.GenreViewSet)
 router.register(r'platforms', views.PlatformViewSet)
+router.register(r'users', views.UserViewSet)
 
 
 urlpatterns = [
