@@ -1,0 +1,7 @@
+# syntax=docker/dockerfile:1
+
+FROM postgres:alpine
+
+ENV POSTGRES_DB=gamestore
+ENV POSTGRES_USER=gamestoreuser
+ENV POSTGRES_PASSWORD=gamestorepassword

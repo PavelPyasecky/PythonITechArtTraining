@@ -8,5 +8,5 @@ COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 COPY . /gamestore
-
+RUN python3 manage.py createsuperuser -u admin -p 'admin'
 RUN python3 manage.py collectstatic
