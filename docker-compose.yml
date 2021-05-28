@@ -1,17 +1,25 @@
 version: '3'
 
 services:
-  nginx:
-    image: nginx:alpine
+  web:
+    image: nginx
+    volumes:
+      - ./templates:/etc/nginx/templates
     ports:
-      - "80:80"
+      - "8000:80"
+    environment:
+      - NGINX_HOST=gamemuster.com
+      - NGINX_PORT=80
 
-  postgres:
-    build:
-      context: .
-      dockerfile: Dockerfile-postgres
-    ports:
-      - "5432:5432"
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_DB: gamestore
+      POSTGRES_USER: gamestoreuser
+      POSTGRES_PASSWORD: gamestorepassword
+    restart: always
+    expose:
+      - "5432"
 
   rabbitmq:
     image: rabbitmq:alpine
@@ -25,9 +33,11 @@ services:
       - DB_USER=gamestore
       - DB_PASSWORD=gamestore
       - DB_PORT=5432
+    links:
+      - db:db
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      - db
       - rabbitmq
-      - nginx
+      - web
