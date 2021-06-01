@@ -7,28 +7,33 @@ services:
       context: ./docker/postgres
       dockerfile: Dockerfile
     environment:
-      POSTGRES_DB: gamestore_db
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      - POSTGRES_PASSWORD=admin
     volumes:
     - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
 
-  rabbitmq:
-    image: rabbitmq:alpine
-
   web:
     build:
       context: ./
       dockerfile: Dockerfile
-    environment:
-      - DB_NAME=gamestore_db
-      - DB_USER=admin
-      - DB_PASSWORD=admin
-      - DB_HOST=db
+    env_file:
+      - .env
     volumes:
-    - ./:/usr/src/app
+      - ./:/usr/src/app
     depends_on:
       - postgresdb
-      - rabbitmq
+    ports:
+    - "8000:8000"
+
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+    - ./static/:/static
+    depends_on:
+      - web
+      - postgresdb
+    ports:
+    - "80:80"
