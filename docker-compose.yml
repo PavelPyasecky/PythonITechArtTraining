@@ -23,6 +23,7 @@ services:
       - ./:/usr/src/app
     depends_on:
       - postgresdb
+      - rabbitmq
     ports:
     - "8000:8000"
 
@@ -37,3 +38,32 @@ services:
       - postgresdb
     ports:
     - "80:80"
+
+  rabbitmq:
+    image: rabbitmq:alpine
+
+  celery:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    command: celery -A proj worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - postgresdb
+      - rabbitmq
+
+  celery-beat:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    command: celery -A proj beat -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - postgresdb
+      - rabbitmq
