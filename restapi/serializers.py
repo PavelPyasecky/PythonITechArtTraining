@@ -32,7 +32,8 @@ class PlatformSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'name', 'game']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField()
 
     class Meta:
         model = User
