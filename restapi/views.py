@@ -7,6 +7,8 @@ from restapi import serializers
 from rest_framework import mixins
 from users.models import CustomUser
 from users.views import resend_auth_mail
+from rest_framework import status
+from rest_framework.response import Response
 
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -48,11 +50,24 @@ class UserViewSet(mixins.UpdateModelMixin,
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     def update(self, request, *args, **kwargs):
+        user = CustomUser.objects.get(id=kwargs['pk'])
+        old_user_email = user.email
         response = super().update(request, *args, **kwargs)
+        new_user_email = response.data['email']
+
         if response.status_code != 200:
             return response
-        user = CustomUser.objects.get(id=kwargs['pk'])
+        if old_user_email == new_user_email:
+            data = {
+                "detail": "Not_modified."
+            }
+            return Response(data=data, status=status.HTTP_304_NOT_MODIFIED)
+
+        self._send_mail(user_id=kwargs['pk'])
+        return response
+
+    def _send_mail(self, user_id):
+        user = CustomUser.objects.get(id=user_id)
         user.is_active = False
         user.save()
-        resend_auth_mail(request, user_id=kwargs['pk'])
-        return response
+        resend_auth_mail(self.request, user_id=user_id)
