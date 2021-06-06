@@ -1,13 +1,13 @@
-import gamestore.settings as settings
 import json
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .api import igdbapi, twitterapi
-from .logic.game import GameAPI, Game
-from users.models import CustomUser
-from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
+import gamestore.settings as settings
+from .api import igdbapi, twitterapi
+
+from .logic.game import GameAPI, Game
+from .logic.tweet import Tweet
 
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
@@ -79,7 +79,8 @@ class FavouriteView(View):
 
 
 class GetFavouriteView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         game_list = [Game(item.game_id) for item in request.user.favourite_games.all()]
         context = {
             'games': game_list,
@@ -90,8 +91,8 @@ class GetFavouriteView(View):
 class MainView(View):
     def _data_init(self):
         data = self.request.GET
-        self.platforms = [item for item in data.getlist('platforms')]
-        self.genres = [item for item in data.getlist('genres')]
+        self.platforms = data.getlist('platforms')
+        self.genres = data.getlist('genres')
         self.rating = data.get('rating', default=50)
 
     def get(self, request):

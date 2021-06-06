@@ -1,6 +1,5 @@
-import gamestore.settings as settings
-from requests import get
 from django.core.management.base import BaseCommand, CommandError
+import gamestore.settings as settings
 from board.models import Game, Image, Platform, Genre
 from board.logic.game import GameAPI
 from board.api import igdbapi
@@ -31,11 +30,14 @@ class Command(BaseCommand):
                 'aggregated_rating': game_api_response_object.aggregated_rating[0],
                 'aggregated_rating_count': game_api_response_object.aggregated_rating[1],
             }
-            game, created = Game.objects.update_or_create(id=game_api_response_object.id, defaults=new_values)
+            game, created = Game.objects.update_or_create(id=game_api_response_object.id,
+                                                          defaults=new_values)
 
-            Image.objects.update_or_create(url=game_api_response_object.img_url, defaults={'is_cover': True, 'game': game})
+            Image.objects.update_or_create(url=game_api_response_object.img_url,
+                                           defaults={'is_cover': True, 'game': game})
             for i in range(len(game_api_response_object.screen_url)):
-                Image.objects.update_or_create(url=game_api_response_object.screen_url[i], defaults={'game': game})
+                Image.objects.update_or_create(url=game_api_response_object.screen_url[i],
+                                               defaults={'game': game})
 
             platforms = Platform.objects.filter(name__in=game_api_response_object.platforms)
             genres = Genre.objects.filter(name__in=game_api_response_object.genres)
@@ -57,9 +59,9 @@ class Command(BaseCommand):
         genres = Genre.objects.all()
 
         for item in platforms_api:
-            if item['id'] not in [platform for platform in platforms]:
+            if item['id'] not in platforms:
                 Platform.objects.update_or_create(id=item['id'], name=item['name'])
 
         for item in genres_api:
-            if item['id'] not in [genre for genre in genres]:
+            if item['id'] not in genres:
                 Genre.objects.update_or_create(id=item['id'], name=item['name'])
