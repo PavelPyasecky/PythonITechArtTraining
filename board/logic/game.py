@@ -63,7 +63,7 @@ class Game:
         self.aggregated_rating = [game.aggregated_rating, game.aggregated_rating_count]
 
     @staticmethod
-    def get_games(platforms, genres, rating):
+    def get_games(platforms, genres, rating, slice=10):
         params = dict()
         if platforms:
             params['platforms__id__in'] = platforms
@@ -71,7 +71,7 @@ class Game:
             params['genres__id__in'] = genres
         if rating:
             params['rating__gte'] = rating
-        games = GameModel.objects.filter(**params)
+        games = GameModel.objects.filter(**params)[:slice]
         game_objects = [Game(game.id) for game in games]
         return game_objects
 

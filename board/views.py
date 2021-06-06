@@ -65,12 +65,12 @@ class FavouriteView(View):
         self.game_id = data['game_id']
         self.favourite_games = self.request.user.favourite_games
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         self._data_init()
         request.user.favourite_games.update_or_create(game_id=self.game_id, user=request.user)
         return HttpResponse(status=200)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request):
         self._data_init()
         favourite_game = request.user.favourite_games.filter(game_id=self.game_id).first()
         if favourite_game:
@@ -96,7 +96,9 @@ class MainView(View):
 
     def get(self, request):
         self._data_init()
-        games = Game.get_games(platforms=self.platforms, genres=self.genres, rating=int(self.rating))
+        games = Game.get_games(platforms=self.platforms,
+                               genres=self.genres,
+                               rating=int(self.rating))
 
         paginator = Paginator(games, 8)    # object_list
         page_number = request.GET.get('page')
