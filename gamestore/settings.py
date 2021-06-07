@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 import os
 from pathlib import Path
-from kombu import Exchange, Queue
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -150,10 +150,10 @@ LOGOUT_REDIRECT_URL = 'main'
 # Email settings
 
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.mail.ru')
-EMAIL_PORT = os.getenv('EMAIL_PORT', 465)
+EMAIL_PORT = os.getenv('EMAIL_PORT', '465')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', True)
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'True')
 
 # Account activation URL
 

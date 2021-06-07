@@ -1,13 +1,13 @@
-import gamestore.settings as settings
 import json
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .api import igdbapi, twitterapi
-from .logic.game import GameAPI, Game
-from users.models import CustomUser
-from .logic.tweet import Tweet
 from django.http import HttpResponse
 from django.views import View
+import gamestore.settings as settings
+from .api import igdbapi, twitterapi
+
+from .logic.game import GameAPI, Game
+from .logic.tweet import Tweet
 
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
@@ -65,12 +65,12 @@ class FavouriteView(View):
         self.game_id = data['game_id']
         self.favourite_games = self.request.user.favourite_games
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         self._data_init()
         request.user.favourite_games.update_or_create(game_id=self.game_id, user=request.user)
         return HttpResponse(status=200)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request):
         self._data_init()
         favourite_game = request.user.favourite_games.filter(game_id=self.game_id).first()
         if favourite_game:
@@ -79,7 +79,8 @@ class FavouriteView(View):
 
 
 class GetFavouriteView(View):
-    def get(self, request):
+    @staticmethod
+    def get(request):
         game_list = [Game(item.game_id) for item in request.user.favourite_games.all()]
         context = {
             'games': game_list,
@@ -90,13 +91,15 @@ class GetFavouriteView(View):
 class MainView(View):
     def _data_init(self):
         data = self.request.GET
-        self.platforms = [item for item in data.getlist('platforms')]
-        self.genres = [item for item in data.getlist('genres')]
+        self.platforms = data.getlist('platforms')
+        self.genres = data.getlist('genres')
         self.rating = data.get('rating', default=50)
 
     def get(self, request):
         self._data_init()
-        games = Game.get_games(platforms=self.platforms, genres=self.genres, rating=int(self.rating))
+        games = Game.get_games(platforms=self.platforms,
+                               genres=self.genres,
+                               rating=int(self.rating))
 
         paginator = Paginator(games, 8)    # object_list
         page_number = request.GET.get('page')

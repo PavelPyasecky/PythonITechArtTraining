@@ -1,5 +1,5 @@
-from board.api.base import BaseWrapper
 from requests import post
+from board.api.base import BaseWrapper
 
 
 API_IGDB_URL = 'https://api.igdb.com/v4/'
@@ -51,10 +51,10 @@ class IgdbWrapper(BaseWrapper):
     @staticmethod
     def _build_filter_string(item):
         if len(item) > 1:
-            str = '(' + ','.join(item) + ')'
+            string = '(' + ','.join(item) + ')'
         else:
-            str = f'{item[0]}'
-        return str
+            string = f'{item[0]}'
+        return string
 
     def _post(self, endpoint, query):
         response = self._api_request(endpoint, query, post)

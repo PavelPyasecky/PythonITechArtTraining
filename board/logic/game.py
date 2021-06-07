@@ -1,8 +1,8 @@
 import datetime
+from django.utils.timezone import make_aware
 import gamestore.settings as settings
 from board.api import igdbapi
 from board.models import Game as GameModel
-from django.utils.timezone import make_aware
 
 
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
@@ -19,16 +19,23 @@ class GameAPI:
         self.name = res['name']
         self.full_description = res['summary']
         if 'cover' in res:
-            self.img_url = igdb_wrapper.get_img_url(res['cover']['image_id'], size='cover_big')
+            self.img_url = igdb_wrapper.get_img_url(res['cover']['image_id'],
+                                                    size='cover_big')
         else:
-            self.img_url = igdb_wrapper.get_img_url(res['screenshots'][0]['image_id'], size='cover_big')
+            self.img_url = igdb_wrapper.get_img_url(res['screenshots'][0]['image_id'],
+                                                    size='cover_big')
         if 'release_dates' in res:
             self.release = make_aware(datetime.datetime.fromtimestamp(res['release_dates'][0]))
         else:
             self.release = None
-        self.screen_url = [igdb_wrapper.get_img_url(item['image_id']) for item in res['screenshots']]
+        self.screen_url = [
+            igdb_wrapper.get_img_url(item['image_id']) for item in res['screenshots']
+        ]
         self.genres = [genre['name'] for genre in res['genres']]
-        self.platforms = [platform['name'] for platform in res['platforms']] if res.get('platforms') else None
+        if res.get('platforms'):
+            self.platforms = [platform['name'] for platform in res['platforms']]
+        else:
+            self.platforms = None
         if 'rating' in res:
             self.rating = [res['rating'], res['rating_count']]
         else:
@@ -63,7 +70,7 @@ class Game:
         self.aggregated_rating = [game.aggregated_rating, game.aggregated_rating_count]
 
     @staticmethod
-    def get_games(platforms, genres, rating):
+    def get_games(platforms, genres, rating, limit=10):
         params = dict()
         if platforms:
             params['platforms__id__in'] = platforms
@@ -71,7 +78,7 @@ class Game:
             params['genres__id__in'] = genres
         if rating:
             params['rating__gte'] = rating
-        games = GameModel.objects.filter(**params)
+        games = GameModel.objects.filter(**params)[:limit]
         game_objects = [Game(game.id) for game in games]
         return game_objects
 
