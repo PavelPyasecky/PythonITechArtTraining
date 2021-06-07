@@ -35,7 +35,6 @@ services:
     - ./static/:/static
     depends_on:
       - web
-      - postgresdb
     ports:
     - "80:80"
 
