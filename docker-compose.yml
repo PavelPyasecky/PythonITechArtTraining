@@ -66,19 +66,3 @@ services:
     depends_on:
       - postgresdb
       - rabbitmq
-
-  api-games-requests:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    command: chmod +x entrypoint.sh
-    entrypoint: /usr/src/app/docker/api_games_requests/entrypoint.sh
-    volumes:
-      - .:/code
-    depends_on:
-      - postgresdb
-      - rabbitmq
-      - web
-      - nginx
