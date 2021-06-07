@@ -55,19 +55,11 @@ class UserViewSet(mixins.UpdateModelMixin,
         response = super().update(request, *args, **kwargs)
         new_user_email = response.data['email']
 
-        if response.status_code != 200:
-            return response
-        if old_user_email == new_user_email:
-            data = {
-                "detail": "Not_modified."
-            }
-            return Response(data=data, status=status.HTTP_304_NOT_MODIFIED)
-
-        self._send_mail(user_id=kwargs['pk'])
+        if old_user_email.lower() != new_user_email.lower():
+            self._send_mail(user=user)
         return response
 
-    def _send_mail(self, user_id):
-        user = CustomUser.objects.get(id=user_id)
+    def _send_mail(self, user):
         user.is_active = False
-        user.save()
-        resend_auth_mail(self.request, user_id=user_id)
+        user.save(update_fields=["is_active"])
+        resend_auth_mail(self.request, user_id=user.id)

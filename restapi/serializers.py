@@ -33,7 +33,8 @@ class PlatformSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField()
+    is_staff = serializers.ReadOnlyField()
+    last_login = serializers.ReadOnlyField()
 
     class Meta:
         model = User
