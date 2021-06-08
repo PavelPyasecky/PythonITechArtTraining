@@ -19,8 +19,8 @@ app.autodiscover_tasks()
 
 
 app.conf.beat_schedule = {
-    'update_favourites': {
-        'task': 'board.tasks.update_favourites',
+    'update_games': {
+        'task': 'board.tasks.update_games',
         'schedule': 10 * 60.0,
         'args': (10,),
     },
