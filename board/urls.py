@@ -1,6 +1,7 @@
 from django.urls import path
 from board import views
 
+
 urlpatterns = [
     path('', views.MainView.as_view(), name='main'),
     path('<int:game_id>/detail/', views.DetailView.as_view(), name='detail'),
