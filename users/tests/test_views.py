@@ -1,7 +1,7 @@
+from datetime import timedelta
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
-from datetime import timedelta
 from users.models import CustomUser
 
 
@@ -36,7 +36,8 @@ class SignUpViewTest(TestCase):
              'password1': '1X<ISRUkw+tuK',
              'password2': '1X<ISRUkw+tuK'})
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'username', 'A user with that username already exists.')
+        self.assertFormError(response, 'form', 'username',
+                             'A user with that username already exists.')
 
     def test_HTTP404_for_invalid_email(self):
         response = self.client.post(
@@ -47,7 +48,8 @@ class SignUpViewTest(TestCase):
              'password1': '1X<ISRUkw+tuK',
              'password2': '1X<ISRUkw+tuK'})
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'email', 'User with this Email address already exists.')
+        self.assertFormError(response, 'form', 'email',
+                             'User with this Email address already exists.')
 
     def test_HTTP404_for_invalid_date(self):
         response = self.client.post(
