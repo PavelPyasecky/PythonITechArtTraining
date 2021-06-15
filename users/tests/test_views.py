@@ -142,3 +142,62 @@ class AccountActivationTest(TestCase):
         message_title = response.context['title']
         self.assertEqual(response.status_code, 200)
         self.assertEqual(message_title, 'DONE!')
+
+
+class UserProfileTest(TestCase):
+    def setUp(self):
+        # Set up non-modified objects used by all test methods
+        self.test_user1 = CustomUser.objects.create_user(
+            username='testuser1',
+            email='testuser1@mail.ru',
+            password='1X<ISRUkw+tuK',
+            birthday=timezone.now().date(),
+            activation_link_time=timezone.now() - timedelta(hours=1),
+            activate_time=timezone.now() - timedelta(hours=3),
+            is_active=True
+        )
+        self.test_user1.save()
+
+    def test_uses_correct_template(self):
+        login = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('profile'))
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/profile.html')
+
+    def test_user_profile_username_field(self):
+        login = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('profile'))
+        field_username = response.context['user_data']['Username']
+        self.assertEqual(field_username, self.test_user1.username)
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_profile_email_field(self):
+        login = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('profile'))
+        field_email = response.context['user_data']['Email']
+        self.assertEqual(field_email, self.test_user1.email)
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_profile_birthday_field(self):
+        login = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('profile'))
+        field_birthday = response.context['user_data']['Birthday']
+        self.assertEqual(field_birthday, self.test_user1.birthday)
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_profile_password_field(self):
+        login = self.client.login(username='testuser1', password='1X<ISRUkw+tuK')
+        response = self.client.get(reverse('profile'))
+        field_password = response.context['user_data']['Password']
+        self.assertEqual(field_password, None)
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
