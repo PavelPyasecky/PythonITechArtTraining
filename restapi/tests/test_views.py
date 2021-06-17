@@ -359,3 +359,48 @@ class GameViewSetTest(TestCase):
         self.assertEqual(login, True)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(game_removed, None)
+
+
+class GenreViewSetTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_user3 = CustomUser.objects.create_user(
+            id=3,
+            username='testuser3',
+            email='testuser3@mail.ru',
+            birthday='2003-03-03',
+            password='3X<ISRUkw+tuK',
+            is_staff=False,
+            is_active=True
+        )
+        test_user3.save()
+
+        genre = Genre.objects.create(id=1, name='racing')
+        genre.game.create(id=1, name='First Game', slug='first-game',
+                          full_description='Best game in the world!')
+
+    def test_get_api_genres(self):
+        login = self.client.login(username='testuser3', password='3X<ISRUkw+tuK')
+        response = self.client.get('/api/genres/')
+        data = {
+            'id': 1,
+            'name': 'racing',
+            'game': [1]
+        }
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['results'][0], data)
+
+    def test_get_api_genres_by_id(self):
+        login = self.client.login(username='testuser3', password='3X<ISRUkw+tuK')
+        response = self.client.get('/api/genres/1/')
+        data = {
+            'id': 1,
+            'name': 'racing',
+            'game': [1]
+        }
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), data)
