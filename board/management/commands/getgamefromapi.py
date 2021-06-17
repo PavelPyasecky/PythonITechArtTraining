@@ -1,6 +1,5 @@
-import gamestore.settings as settings
-from requests import get
 from django.core.management.base import BaseCommand, CommandError
+import gamestore.settings as settings
 from board.models import Game, Image, Platform, Genre
 from board.logic.game import GameAPI
 from board.api import igdbapi
@@ -19,29 +18,31 @@ class Command(BaseCommand):
         self._base_init()
         game_id = options['id']
 
-        game = GameAPI(game_id)
-        if game.is_empty():
-            game = GameAPI(game_id)
+        game_api_response_object = GameAPI(game_id)
+        if game_api_response_object.is_empty():
             new_values = {
-                'name': game.name,
-                'slug': game.slug,
-                'full_description': game.full_description,
-                'release': game.release,
-                'rating': game.rating[0],
-                'rating_count': game.rating[1],
-                'aggregated_rating': game.aggregated_rating[0],
-                'aggregated_rating_count': game.aggregated_rating[1],
+                'name': game_api_response_object.name,
+                'slug': game_api_response_object.slug,
+                'full_description': game_api_response_object.full_description,
+                'release': game_api_response_object.release,
+                'rating': game_api_response_object.rating[0],
+                'rating_count': game_api_response_object.rating[1],
+                'aggregated_rating': game_api_response_object.aggregated_rating[0],
+                'aggregated_rating_count': game_api_response_object.aggregated_rating[1],
             }
-            g1, created = Game.objects.update_or_create(id=game.id, defaults=new_values)
+            game, created = Game.objects.update_or_create(id=game_api_response_object.id,
+                                                          defaults=new_values)
 
-            Image.objects.update_or_create(url=game.img_url, defaults={'is_cover': True, 'game': g1})
-            for i in range(len(game.screen_url)):
-                Image.objects.update_or_create(url=game.screen_url[i], defaults={'game': g1})
+            Image.objects.update_or_create(url=game_api_response_object.img_url,
+                                           defaults={'is_cover': True, 'game': game})
+            for i in range(len(game_api_response_object.screen_url)):
+                Image.objects.update_or_create(url=game_api_response_object.screen_url[i],
+                                               defaults={'game': game})
 
-            platforms = Platform.objects.filter(name__in=game.platforms)
-            genres = Genre.objects.filter(name__in=game.genres)
-            g1.platforms.add(*platforms)
-            g1.genres.add(*genres)
+            platforms = Platform.objects.filter(name__in=game_api_response_object.platforms)
+            genres = Genre.objects.filter(name__in=game_api_response_object.genres)
+            game.platforms.add(*platforms)
+            game.genres.add(*genres)
 
         else:
             raise CommandError('There is no game with such parameters')
@@ -56,7 +57,11 @@ class Command(BaseCommand):
 
         platforms = Platform.objects.all()
         genres = Genre.objects.all()
-        if platforms.count() != len(platforms_api):
-            [Platform.objects.create(id=item['id'], name=item['name']) for item in platforms]
-        if genres.count() != len(genres_api):
-            [Genre.objects.create(id=item['id'], name=item['name']) for item in genres]
+
+        for item in platforms_api:
+            if item['id'] not in platforms:
+                Platform.objects.update_or_create(id=item['id'], name=item['name'])
+
+        for item in genres_api:
+            if item['id'] not in genres:
+                Genre.objects.update_or_create(id=item['id'], name=item['name'])

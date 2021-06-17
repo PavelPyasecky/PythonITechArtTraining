@@ -47,15 +47,15 @@
 
     <script src="{% static 'board/js/post_button.js' %}"></script>
     <script>
-        var clicked_element;
+        let clicked_element;
         let url = '{% url 'edit' %}';
         let csrf_token = '{{ csrf_token }}';
         document.addEventListener('mouseover', (element) => {
          clicked_element = element.target;
-         btn = clicked_element.closest("a");
+         let btn = clicked_element.closest("a");
          btn.addEventListener('click', () => {
-                sendForm(url, btn.id, 'DELETE');
-                changeDeleteBlockState(btn.id);
+                sendForm(url, parseInt(btn.id), 'DELETE');
+                changeDeleteBlockState(parseInt(btn.id));
             });
          });
 

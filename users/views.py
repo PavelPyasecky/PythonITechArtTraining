@@ -1,13 +1,13 @@
-from django.utils import timezone
 from datetime import timedelta
+from django.utils import timezone
 from django.urls import reverse_lazy
 from django.views import generic
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.contrib.auth.forms import AuthenticationForm
+from gamestore.settings import ACCOUNT_ACTIVATION_URL
 from .models import CustomUser
 from .forms import CustomUserCreationForm
-from gamestore.settings import ACCOUNT_ACTIVATION_URL
 
 
 class SignUpView(generic.CreateView):
@@ -18,7 +18,8 @@ class SignUpView(generic.CreateView):
     def form_valid(self, form):
         super().form_valid(form)
         form = AuthenticationForm()
-        return render(self.request, 'registration/login.html', context={'nextstep': True, 'form': form})
+        return render(self.request, 'registration/login.html',
+                      context={'nextstep': True, 'form': form})
 
 
 def account_activation(request, user_id):
@@ -27,7 +28,8 @@ def account_activation(request, user_id):
     difference = timezone.now() - user.activation_link_time
     context = {
         'title': 'Something goes wrong...',
-        'text': 'Your activation link has expired. Click on the button to create a new activation email.',
+        'text': 'Your activation link has expired. '
+                'Click on the button to create a new activation email.',
         'btn_name': 'create email',
         'btn_url_name': 'reactivation',
         'user': user,
