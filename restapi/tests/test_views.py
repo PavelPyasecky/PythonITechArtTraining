@@ -404,3 +404,54 @@ class GenreViewSetTest(TestCase):
         self.assertEqual(login, True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content), data)
+
+
+class PlatformViewSetTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_user3 = CustomUser.objects.create_user(
+            id=3,
+            username='testuser3',
+            email='testuser3@mail.ru',
+            birthday='2003-03-03',
+            password='3X<ISRUkw+tuK',
+            is_staff=False,
+            is_active=True
+        )
+        test_user3.save()
+
+        platform = Platform.objects.create(id=1, name='windows')
+        platform.game.create(id=1, name='First Game', slug='first-game',
+                             full_description='Best game in the world!')
+
+    def test_get_api_platforms(self):
+        login = self.client.login(username='testuser3', password='3X<ISRUkw+tuK')
+        response = self.client.get('/api/platforms/')
+        data = {
+            'id': 1,
+            'name': 'windows',
+            'game': [1]
+        }
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['results'][0], data)
+
+    def test_get_api_platforms_HTTP403_if_not_authenticated(self):
+        response = self.client.get('/api/platforms/')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(json.loads(response.content)['detail'],
+                         'Authentication credentials were not provided.')
+
+    def test_get_api_platforms_by_id(self):
+        login = self.client.login(username='testuser3', password='3X<ISRUkw+tuK')
+        response = self.client.get('/api/platforms/1/')
+        data = {
+            'id': 1,
+            'name': 'windows',
+            'game': [1]
+        }
+        # Check our user is logged in
+        self.assertEqual(login, True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content), data)
