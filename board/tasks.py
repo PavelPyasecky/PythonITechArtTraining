@@ -9,4 +9,4 @@ def update_favourites(limit=None):
     if limit:
         favourites = favourites[:limit]
     for game in favourites:
-        management.call_command('getgamefromapi', id=game.id)
+        management.call_command("getgamefromapi", id=game.id)

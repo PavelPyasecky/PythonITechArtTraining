@@ -9,54 +9,82 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Favourite',
+            name="Favourite",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('game_id', models.IntegerField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("game_id", models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=150, unique=True)),
-                ('slug', models.CharField(max_length=150, unique=True)),
-                ('full_description', models.TextField()),
-                ('release', models.DateTimeField(default=None, null=True)),
-                ('rating', models.FloatField(null=True)),
-                ('rating_count', models.IntegerField(null=True)),
-                ('aggregated_rating', models.FloatField(null=True)),
-                ('aggregated_rating_count', models.IntegerField(null=True)),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=150, unique=True)),
+                ("slug", models.CharField(max_length=150, unique=True)),
+                ("full_description", models.TextField()),
+                ("release", models.DateTimeField(default=None, null=True)),
+                ("rating", models.FloatField(null=True)),
+                ("rating_count", models.IntegerField(null=True)),
+                ("aggregated_rating", models.FloatField(null=True)),
+                ("aggregated_rating_count", models.IntegerField(null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Platform',
+            name="Platform",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=150, unique=True)),
-                ('game', models.ManyToManyField(related_name='platforms', to='board.Game')),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=150, unique=True)),
+                (
+                    "game",
+                    models.ManyToManyField(related_name="platforms", to="board.Game"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Image',
+            name="Image",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('url', models.CharField(max_length=150, unique=True)),
-                ('is_cover', models.BooleanField(default=False)),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='board.game')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("url", models.CharField(max_length=150, unique=True)),
+                ("is_cover", models.BooleanField(default=False)),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="board.game",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Genre',
+            name="Genre",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=150, unique=True)),
-                ('game', models.ManyToManyField(related_name='genres', to='board.Game')),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=150, unique=True)),
+                (
+                    "game",
+                    models.ManyToManyField(related_name="genres", to="board.Game"),
+                ),
             ],
         ),
     ]

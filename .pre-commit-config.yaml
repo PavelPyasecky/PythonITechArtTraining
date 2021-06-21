@@ -19,3 +19,4 @@ repos:
         entry: pylint
         language: python
         types: [python]
+        stages: [manual]
