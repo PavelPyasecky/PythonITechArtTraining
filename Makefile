@@ -13,6 +13,11 @@ test:
 black:
 	python -m black --version
 	python -m black .
+## Format imports in your code using isort
+.PHONY: isort
+isort:
+	python -m isort --version
+	python -m isort .
 ## Run ci part
 .PHONY: ci
 ci:
