@@ -1,6 +1,6 @@
 from requests import post
-from board.api.base import BaseWrapper
 
+from board.api.base import BaseWrapper
 
 API_IGDB_URL = "https://api.igdb.com/v4/"
 

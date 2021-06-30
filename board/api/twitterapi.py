@@ -1,4 +1,5 @@
 from requests import get
+
 from board.api.base import BaseWrapper
 
 API_TWITTER_URL = "https://api.twitter.com/2/"

@@ -1,7 +1,6 @@
 import gamestore.settings as settings
 from board.api import twitterapi
 
-
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
 
 

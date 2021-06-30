@@ -1,9 +1,10 @@
 import datetime
+
 from django.utils.timezone import make_aware
+
 import gamestore.settings as settings
 from board.api import igdbapi
 from board.models import Game as GameModel
-
 
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
 

@@ -1,14 +1,15 @@
 import json
-from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views import View
+
 import gamestore.settings as settings
+
 from .api import igdbapi, twitterapi
-
-from .logic.game import GameAPI, Game
+from .logic.game import Game, GameAPI
 from .logic.tweet import Tweet
-
 
 twitter_wrapper = twitterapi.TwitterWrapper(settings.API_TWITTER_TOKEN)
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)

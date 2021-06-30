@@ -1,8 +1,10 @@
-from django.utils import timezone
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.admin import widgets
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.template.loader import render_to_string
+from django.utils import timezone
+
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
+
 from .models import CustomUser
 
 

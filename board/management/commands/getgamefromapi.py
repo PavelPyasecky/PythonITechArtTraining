@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
-import gamestore.settings as settings
-from board.models import Game, Image, Platform, Genre
-from board.logic.game import GameAPI
-from board.api import igdbapi
 
+import gamestore.settings as settings
+from board.api import igdbapi
+from board.logic.game import GameAPI
+from board.models import Game, Genre, Image, Platform
 
 igdb_wrapper = igdbapi.IgdbWrapper(settings.API_IGDB_CLIENT_ID, settings.API_IGDB_TOKEN)
 

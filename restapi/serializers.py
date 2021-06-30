@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from board.models import Game, Genre, Platform
 from users.models import CustomUser as User
 

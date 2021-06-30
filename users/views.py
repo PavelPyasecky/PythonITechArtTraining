@@ -1,13 +1,16 @@
 from datetime import timedelta
-from django.utils import timezone
-from django.urls import reverse_lazy
-from django.views import generic
+
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.contrib.auth.forms import AuthenticationForm
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.views import generic
+
 from gamestore.settings import ACCOUNT_ACTIVATION_URL
-from .models import CustomUser
+
 from .forms import CustomUserCreationForm
+from .models import CustomUser
 
 
 class SignUpView(generic.CreateView):

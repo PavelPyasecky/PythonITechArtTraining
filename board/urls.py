@@ -1,6 +1,6 @@
 from django.urls import path
-from board import views
 
+from board import views
 
 urlpatterns = [
     path("", views.MainView.as_view(), name="main"),

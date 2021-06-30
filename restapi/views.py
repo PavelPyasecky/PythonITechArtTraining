@@ -1,12 +1,10 @@
-from rest_framework import mixins
-from rest_framework import permissions
-from rest_framework import viewsets
+from rest_framework import mixins, permissions, viewsets
 
 from board.models import Game, Genre, Platform
+from restapi import serializers
+from restapi.permissions import IsOwnerOrReadOnly, IsStaffOrReadOnly
 from users.models import CustomUser as User
 from users.views import resend_auth_mail
-from restapi.permissions import IsStaffOrReadOnly, IsOwnerOrReadOnly
-from restapi import serializers
 
 
 class GameViewSet(viewsets.ModelViewSet):
