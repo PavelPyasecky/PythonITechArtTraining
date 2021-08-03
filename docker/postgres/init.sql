@@ -1,0 +1,4 @@
+CREATE USER admin WITH PASSWORD 'admin';
+
+CREATE DATABASE gamestore_db;
+GRANT ALL PRIVILEGES ON DATABASE gamestore_db TO admin;

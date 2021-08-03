@@ -21,28 +21,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "8(bhd4&!e-gyc0ko42luocye-ejit4f()!l)3a10#^9&o%p6gv"
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS'),]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "users.apps.UsersConfig",
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "board",
-    "django_celery_results",
+    'users.apps.UsersConfig',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'board',
+    'django_celery_results',
     "rest_framework",
     "restapi",
+    'psycopg2',
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -129,7 +132,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = "/static/"
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -158,9 +164,9 @@ EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True")
 
 # Account activation URL
 
-ACCOUNT_ACTIVATION_URL = (
-    "http://localhost:8000/users/activate/"  # Production - https://
-)
+
+ACCOUNT_ACTIVATION_URL = os.getenv('ACCOUNT_ACTIVATION_URL')
+
 
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
