@@ -25,7 +25,7 @@ class IgdbWrapper(BaseWrapper):
         response = self._post("games", query)
         return response[0] if response else None
 
-    def get_games(self, platforms, genres, rating):
+    def get_games(self, platforms, genres, rating, limit, offset):
         query = {
             "filter[screenshots][not_eq]": "null",
             "filter[genres][not_eq]": "null",
@@ -35,8 +35,12 @@ class IgdbWrapper(BaseWrapper):
         if genres:
             query["filter[genres][eq]"] = self._build_filter_string(genres)
         if rating:
-            query["filter[rating][gte]"] = self._build_filter_string(rating)
-        return self._post("games", query)
+            query['filter[rating][gte]'] = self._build_filter_string(rating)
+        if limit:
+            query['limit'] = self._build_filter_string(limit)
+        if offset:
+            query['offset'] = self._build_filter_string(offset)
+        return self._post('games', query)
 
     def get_genres(self, query):
         return self._post("genres", query)
