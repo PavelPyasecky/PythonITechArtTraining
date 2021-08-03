@@ -1,11 +1,15 @@
 import uuid
+
 from django.db import models
+
 from users.models import CustomUser
 
 
 class Favourite(models.Model):
     game_id = models.IntegerField()
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='favourite_games')
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="favourite_games"
+    )
 
 
 class Game(models.Model):
@@ -23,17 +27,17 @@ class Game(models.Model):
 class Image(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     url = models.CharField(max_length=150, unique=True)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='images')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="images")
     is_cover = models.BooleanField(default=False)
 
 
 class Genre(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=150, unique=True)
-    game = models.ManyToManyField(Game, related_name='genres')
+    game = models.ManyToManyField(Game, related_name="genres")
 
 
 class Platform(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=150, unique=True)
-    game = models.ManyToManyField(Game, related_name='platforms')
+    game = models.ManyToManyField(Game, related_name="platforms")
