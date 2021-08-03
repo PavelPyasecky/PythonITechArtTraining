@@ -1,19 +1,32 @@
 from rest_framework import serializers
+
 from board.models import Game, Genre, Platform
 from users.models import CustomUser as User
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):
     genres = serializers.PrimaryKeyRelatedField(many=True, queryset=Genre.objects.all())
-    platforms = serializers.PrimaryKeyRelatedField(many=True, queryset=Platform.objects.all())
-    images = serializers.SlugRelatedField(many=True, read_only=True, slug_field='url')
+    platforms = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Platform.objects.all()
+    )
+    images = serializers.SlugRelatedField(many=True, read_only=True, slug_field="url")
 
     class Meta:
         model = Game
-        fields = ['id', 'name', 'slug', 'genres',
-                  'platforms', 'full_description', 'release',
-                  'rating', 'rating_count', 'aggregated_rating',
-                  'aggregated_rating_count', 'images']
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "genres",
+            "platforms",
+            "full_description",
+            "release",
+            "rating",
+            "rating_count",
+            "aggregated_rating",
+            "aggregated_rating_count",
+            "images",
+        ]
 
 
 class GenreSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,7 +34,7 @@ class GenreSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Genre
-        fields = ['id', 'name', 'game']
+        fields = ["id", "name", "game"]
 
 
 class PlatformSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,7 +42,7 @@ class PlatformSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Platform
-        fields = ['id', 'name', 'game']
+        fields = ["id", "name", "game"]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -38,4 +51,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'birthday', 'is_staff', 'last_login']
+        fields = ["id", "username", "email", "birthday", "is_staff", "last_login"]

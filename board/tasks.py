@@ -1,5 +1,6 @@
 from celery import shared_task
 from django.core import management
+
 from board.models import Favourite
 
 
@@ -9,4 +10,4 @@ def update_favourites(limit=None):
     if limit:
         favourites = favourites[:limit]
     for game in favourites:
-        management.call_command('getgamefromapi', id=game.id)
+        management.call_command("getgamefromapi", id=game.id)

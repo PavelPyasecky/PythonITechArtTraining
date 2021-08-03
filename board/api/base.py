@@ -12,8 +12,8 @@ class BaseWrapper(ABC):
         response.raise_for_status()
         return response.json()
 
-    def _build_url(self, endpoint=''):
-        return f'{self._api_url}{endpoint}'
+    def _build_url(self, endpoint=""):
+        return f"{self._api_url}{endpoint}"
 
     @abstractmethod
     def _compose_request(self, query):

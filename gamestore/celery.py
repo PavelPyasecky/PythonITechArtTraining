@@ -1,17 +1,17 @@
 import os
+
 from celery import Celery
 
-
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gamestore.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gamestore.settings")
 
-app = Celery('gamestore')
+app = Celery("gamestore")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.config_from_object("django.conf:settings", namespace="CELERY")
 
 
 # Load task modules from all registered Django app configs.
@@ -19,9 +19,9 @@ app.autodiscover_tasks()
 
 
 app.conf.beat_schedule = {
-    'update_favourites': {
-        'task': 'board.tasks.update_favourites',
-        'schedule': 10 * 60.0,
-        'args': (10,),
+    "update_favourites": {
+        "task": "board.tasks.update_favourites",
+        "schedule": 10 * 60.0,
+        "args": (10,),
     },
 }
