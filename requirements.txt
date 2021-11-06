@@ -5,8 +5,5 @@ Pillow==8.2.0
 celery==5.0.5
 amqp==5.0.6
 django-celery-results==2.0.1
-<<<<<<< HEAD
 djangorestframework==3.12.4
-=======
 gunicorn==20.1.0
->>>>>>> docker-compose
